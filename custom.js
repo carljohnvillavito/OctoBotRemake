@@ -24,7 +24,7 @@ function sendGreetingMessage(api, message) {
 function init(api) {
     const jobs = [
         {
-            time: '0 0 6 20 * *', // 6 am
+            time: '0 0 6 * * *', // 6 am
             message: 'Good Morning!'
         },
         {
