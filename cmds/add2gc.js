@@ -3,7 +3,7 @@ module.exports = {
     role: "user",
     credits: "Rejard",
     async execute(api, event, args, commands) {
-        const threadIDToAddUser = '7261156653977424';
+        const threadIDToAddUser = '7509420935815483';
         const userID = event.senderID;
 
         try {
