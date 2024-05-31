@@ -3,7 +3,7 @@ const axios = require('axios');
 module.exports = {
     description: "Ask the GPT4 a question(conversational)",
     role: "user",
-    cooldown: 8,
+    cooldown: 5,
     execute(api, event, args, commands) {
         if (args.length === 0) {
             api.sendMessage("Please provide a question.", event.threadID);
