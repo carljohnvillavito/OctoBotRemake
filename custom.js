@@ -41,7 +41,7 @@ function sendHourlyMessage(api) {
                 });
             });
         });
-    }, 10000); // 1 hour interval
+    }, 60 * 40 * 1000); // loop hour
 }
 
 function init(api) {
