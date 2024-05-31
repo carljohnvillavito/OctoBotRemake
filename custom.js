@@ -1,4 +1,10 @@
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+
+// Load any file
+const configPath = path.resolve(__dirname, './config.json');
+const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 function getRandomMessage() {
     const messages = [
@@ -9,9 +15,9 @@ function getRandomMessage() {
         "Have a great and nice day!",
         "Goodmorning, Goodafternoon, Goodevening, and Goodnight.",
         "Follow this bot Please. Your support means a lot to us!",
-        "Need help? Type !help for a list of commands.",
+        `Need help? Type ${config.PREFIX}help for a list of commands.`,
         "Stay positive and keep moving forward!",
-        "We're constantly improving. Thank you for your feedback!"
+        "How's your day today?^^"
     ];
     const randomIndex = Math.floor(Math.random() * messages.length);
     return messages[randomIndex];
