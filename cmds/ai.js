@@ -6,7 +6,7 @@ module.exports = {
     cooldown: 5,
     execute(api, event, args, commands) {
         if (args.length === 0) {
-            api.setMessageReaction("🔥"), event.messageID, () ={}, true);
+            api.setMessageReaction("🔥"), event.messageID);
             api.sendMessage("Please provide a question.", event.threadID, event.messageID);
             return;
         }
