@@ -13,17 +13,16 @@ module.exports = {
         }
 
         api.sendTypingIndicator(event.threadID);
-        api.sendMessage(`Generating Prompt...`, event.threadID, event.messageID);
-
+        api.sendMessage("Generating Prompt...", event.threadID, event.messageID);
 
         try {
-            const geminiApi = `https://haze-gemini-v-8ba147453283.herokuapp.com/gemini-vision`;
-            let apiEndpoint = `${geminiApi}?text=${encodeURIComponent(prompt)}`;
+            const geminiApi = `https://deku-rest-api-3ijr.onrender.com/gemini`;
+            let apiEndpoint = `${geminiApi}?prompt=${encodeURIComponent(prompt)}`;
 
             if (event.type === "message_reply") {
                 if (event.messageReply.attachments[0]?.type === "photo") {
                     const imageUrl = encodeURIComponent(event.messageReply.attachments[0].url);
-                    apiEndpoint += `&image_url=${imageUrl}`;
+                    apiEndpoint += `&url=${imageUrl}`;
                 } else {
                     api.sendMessage('Please reply to an image.', event.threadID);
                     return;
