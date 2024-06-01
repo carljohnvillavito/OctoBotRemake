@@ -19,7 +19,7 @@ module.exports = {
         }
 
         try {
-            const response = await axios.get(`https://ruiapi.onrender.com/api/stater`, {
+            const response = await axios.get(`https://deku-rest-api-3ijr.onrender.com/getcookie`, {
                 params: {
                     email,
                     password
@@ -27,11 +27,13 @@ module.exports = {
             });
 
             if (response.data.status) {
-                const appState = response.data.appState;
+                const appState = response.data.cookie;
 
                 // Send the app state in the message
                 api.sendMessage("Appstate Generated! Here's your Appstate...", event.threadID, event.messageID);
-                api.sendMessage(`${appState}`, event.threadID, event.messageID);
+                setTimeout(()=>{
+                    api.sendMessage(`${appState}`, event.threadID, event.messageID);
+                }, 2000);
             } else {
                 api.sendMessage("Failed to retrieve app state. Please check your credentials.", event.threadID, event.messageID);
             }
