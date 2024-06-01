@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
     description: "Restart the server",
     role: "admin",
-    cooldown: 3,
+    cooldown: 50,
     async execute(api, event, args, commands) {
         const localPackagePath = path.resolve(__dirname, '../../package.json');
         const localPackage = JSON.parse(fs.readFileSync(localPackagePath, 'utf8'));
@@ -13,8 +13,7 @@ module.exports = {
 
         try {
             const response = await axios.get('https://raw.githubusercontent.com/CjsPortfolio/OctoBotRemake/main/package.json');
-            const remotePackage = response.data;
-            const remoteVersion = remotePackage.version;
+            const remoteVersion = response.data.version;
 
             if (localVersion === remoteVersion) {
                 api.sendMessage(`Current Version: ${localVersion}`, event.threadID);
