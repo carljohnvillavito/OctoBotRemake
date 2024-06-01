@@ -8,4 +8,5 @@ module.exports = {
             api.sendMessage("Successfully Rebooted Bot!", event.threadID);
             process.exit(1);
         }, 5000);
+    }
 };
