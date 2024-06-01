@@ -31,7 +31,7 @@ module.exports = {
 
             const response = await axios.get(apiEndpoint);
 
-            if (response.status === 200 && response.data.response) {
+            if (response.status === 200 && response.data.gemini) {
                 const formattedResponse = formatFont(response.data.response);
                 api.sendMessage(`🎓 𝐆𝐞𝐦𝐢𝐧𝐢 (𝐀𝐈)\n\n🖋️ ${formattedResponse}`, event.threadID, event.messageID);
             } else {
