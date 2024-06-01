@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 module.exports = {
-    description: "Talk to Gemini Pro Vision",
+    description: "Talk to Gemini Pro Vision 1",
     role: "user",
     cooldown: 5,
     execute: async function(api, event, args) {
