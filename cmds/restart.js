@@ -5,30 +5,10 @@ const path = require('path');
 module.exports = {
     description: "Restart the server",
     role: "admin",
-    cooldown: 50,
+    cooldown: 5,
     async execute(api, event, args, commands) {
-        const localPackagePath = path.resolve(__dirname, '../../package.json');
-        const localPackage = JSON.parse(fs.readFileSync(localPackagePath, 'utf8'));
-        const localVersion = localPackage.version;
-
-        try {
-            const response = await axios.get('https://raw.githubusercontent.com/CjsPortfolio/OctoBotRemake/main/package.json');
-            const remoteVersion = response.data.version;
-
-            if (localVersion === remoteVersion) {
-                api.sendMessage(`Current Version: ${localVersion}`, event.threadID);
-            } else {
-                api.sendMessage(`Repo Updating to version ${remoteVersion}...`, event.threadID);
-                setTimeout(() => {
-                    process.exit(1);
-                }, 4000);
-            }
-        } catch (error) {
-            console.error('Error fetching version:', error);
-            api.sendMessage('Error checking version. Restarting the server...', event.threadID);
-            setTimeout(() => {
-                process.exit(1);
-            }, 4000);
-        }
-    }
+        api.sendMessage("Restarting Repo...", event.threadID, event.messageID);
+        setTimeout(()=>{
+            process.exit(1);
+        }, 5000);
 };
