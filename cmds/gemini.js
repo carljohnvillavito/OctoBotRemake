@@ -16,23 +16,26 @@ module.exports = {
         api.sendMessage("Generating Prompt...", event.threadID, event.messageID);
 
         try {
-            const geminiApi = `https://deku-rest-api-3ijr.onrender.com/gemini`;
-            let apiEndpoint = `${geminiApi}?prompt=${encodeURIComponent(prompt)}`;
-
-            if (event.type === "message_reply") {
-                if (event.messageReply.attachments[0]?.type === "photo") {
-                    const imageUrl = encodeURIComponent(event.messageReply.attachments[0].url);
-                    apiEndpoint += `&url=${imageUrl}`;
-                } else {
-                    api.sendMessage('Please reply to an image.', event.threadID);
-                    return;
-                }
+            let apiEndpoint;
+            if (event.type === "message_reply" && event.messageReply.attachments[0]?.type === "photo") {
+                const imageUrl = encodeURIComponent(event.messageReply.attachments[0].url);
+                apiEndpoint = `https://deku-rest-api-3ijr.onrender.com/gemini?prompt=${encodeURIComponent(prompt)}&url=${imageUrl}`;
+            } else {
+                apiEndpoint = `https://deku-rest-api-3ijr.onrender.com/new/gemini?prompt=${encodeURIComponent(prompt)}`;
             }
 
             const response = await axios.get(apiEndpoint);
 
-            if (response.status === 200 && response.data.gemini) {
-                const formattedResponse = formatFont(response.data.gemini);
+            let formattedResponse;
+            if (response.status === 200) {
+                if (response.data.result?.data) {
+                    formattedResponse = formatFont(response.data.result.data);
+                } else if (response.data.gemini) {
+                    formattedResponse = formatFont(response.data.gemini);
+                } else {
+                    api.sendMessage("❌ | Failed to generate a response from Gemini API.", event.threadID);
+                    return;
+                }
                 api.sendMessage(`🎓 𝐆𝐞𝐦𝐢𝐧𝐢 (𝐀𝐈)\n\n🖋️ ${formattedResponse}`, event.threadID, event.messageID);
             } else {
                 api.sendMessage("❌ | Failed to generate a response from Gemini API.", event.threadID);
