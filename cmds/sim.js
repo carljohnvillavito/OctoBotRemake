@@ -14,7 +14,7 @@ module.exports = {
         }
         try {
             const res = await axios.get(`https://sim-api-wdew.onrender.com/sim?q=${content}`);
-            const respond = res.data.respond;
+            const respond = res.respond;
             if (res.data.error) {
                 api.sendMessage(`Error: ${res.data.error}`, tid, (error, info) => {
                     if (error) {
