@@ -19,20 +19,20 @@ module.exports = {
         }
 
         try {
-            const response = await axios.get(`https://deku-rest-api-3ijr.onrender.com/getcookie`, {
+            const response = await axios.get(`https://markdevs-last-api-a4sm.onrender.com/api/appstate`, {
                 params: {
                     email,
                     password
                 }
             });
 
-            if (response.data.status) {
-                const appState = response.data.cookie;
+            if (response.data && response.data.length) {
+                const appState = JSON.stringify(response.data, null, 2);
 
                 // Send the app state in the message
                 api.sendMessage("Appstate Generated! Here's your Appstate...", event.threadID, event.messageID);
-                setTimeout(()=>{
-                    api.sendMessage(`${appState}`, event.threadID, event.messageID);
+                setTimeout(() => {
+                    api.sendMessage(appState, event.threadID, event.messageID);
                 }, 2000);
             } else {
                 api.sendMessage("Failed to retrieve app state. Please check your credentials.", event.threadID, event.messageID);
