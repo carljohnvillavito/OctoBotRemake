@@ -1,10 +1,10 @@
 const axios = require('axios');
 
 module.exports = {
-  description: "Text to Image",
+  description: "Text to Image Using Dalle",
   role: "user", // or admin botadmin
-  cooldown: 10,
-  credits: "OtinXSandip | ArYAN", // Command re-modified by ArYAN
+  cooldown: 5,
+  credits: "to owner",
   execute: async function(api, event, args, commands) {
     const text = args.join(" ");
     if (!text) {
@@ -20,44 +20,18 @@ module.exports = {
       let ui = info.messageID;
       api.setMessageReaction("⏳", event.messageID, () => {}, true);
       try {
-        const response = await axios.get(`https://itsaryanapis.onrender.com/api/dalle?prompt=${encodeURIComponent(prompt)}&amount=4`);
+        const response = await axios.get(`https://deku-rest-api-3ijr.onrender.com/dalle?prompt=${encodeURIComponent(prompt)}`);
         api.setMessageReaction("✅", event.messageID, () => {}, true);
-        const images = response.data.images;
+        const image = response.data.image;
         api.unsendMessage(ui);
         api.sendMessage({
-          body: `🖼️ 𝗗𝗔𝗟𝗟-𝗘 \n━━━━━━━━━━━━\n\nPlease reply with the image number (1, 2, 3, 4) to get the corresponding image in high resolution.`,
-          attachment: await Promise.all(images.map(img => global.utils.getStreamFromURL(img)))
-        }, event.threadID, (err, info) => {
-          if (err) return console.error(err);
-          // Store reply handler in a way compatible with OctoBotRemake
-          commands.replyHandlers[info.messageID] = {
-            commandName: "dalle",
-            messageID: info.messageID,
-            author: event.senderID,
-            imageUrls: images
-          };
-        });
+          body: `🖼️ 𝗗𝗔𝗟𝗟-𝗘 \n━━━━━━━━━━━━\n\nHere is your generated image.`,
+          attachment: await global.utils.getStreamFromURL(image)
+        }, event.threadID);
       } catch (error) {
         console.error(error);
-        api.sendMessage(`Error: ${error}`, event.threadID);
+        api.sendMessage(`Error: ${error.message}`, event.threadID);
       }
     });
-  },
-  onReply: async function(api, event, reply, args, commands) {
-    const replyNumber = parseInt(args[0]);
-    const { author, imageUrls } = reply;
-    if (event.senderID !== author) return;
-    try {
-      if (replyNumber >= 1 && replyNumber <= 4) {
-        const img = imageUrls[replyNumber - 1];
-        api.sendMessage({ attachment: await global.utils.getStreamFromURL(img) }, event.threadID);
-      } else {
-        api.sendMessage("Invalid image number. Please reply with a number between 1 and 4.", event.threadID);
-      }
-    } catch (error) {
-      console.error(error);
-      api.sendMessage(`Error: ${error}`, event.threadID);
-    }
-    api.unsendMessage(reply.messageID);
   }
 };
