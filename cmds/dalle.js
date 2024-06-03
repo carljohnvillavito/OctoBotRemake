@@ -5,7 +5,7 @@ module.exports = {
   role: "user", // or admin botadmin
   cooldown: 10,
   credits: "to the owner."
-  async execute(api, event, args, commands) {
+  execute(api, event, args, commands) {
     const text = args.join(" ");
     if (!text) {
       return api.sendMessage("❓| Please provide a prompt.", event.threadID, event.messageID);
