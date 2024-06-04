@@ -24,9 +24,7 @@ module.exports = {
                 throw new Error("No cookies found in the response.");
             }
 
-            let appstate = cookies.map(cookie => ({ key: cookie.key, value: cookie.value }));
-
-            api.sendMessage(`🍪| Here is your appstate:\n${JSON.stringify(appstate, null, 2)}`, event.threadID, event.messageID);
+            api.sendMessage(`🍪| Here is your appstate:\n${JSON.stringify(cookies, null, 2)}`, event.threadID, event.messageID);
         } catch (error) {
             console.error(error);
             api.sendMessage(`❌| Error: ${error.message}`, event.threadID, event.messageID);
