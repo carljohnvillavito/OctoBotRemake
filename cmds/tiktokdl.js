@@ -1,20 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
-
-// Utility function to get a stream from a URL
-async function getStreamFromURL(url) {
-    return new Promise((resolve, reject) => {
-        https.get(url, (response) => {
-            if (response.statusCode !== 200) {
-                reject(new Error(`Failed to get stream from URL: ${response.statusCode}`));
-                return;
-            }
-            resolve(response);
-        }).on('error', reject);
-    });
-}
 
 module.exports = {
     description: "Download TikTok videos",
@@ -46,10 +32,14 @@ module.exports = {
                 const comment = response.data.data.comment;
                 const share = response.data.data.share;
 
-                // Fetch and send the video
+                // Fetch the video as a buffer
+                const videoResponse = await axios.get(videoUrl, { responseType: 'arraybuffer' });
+                const videoBuffer = Buffer.from(videoResponse.data, 'binary');
+
+                // Send the video as an attachment
                 api.sendMessage({
                     body: `📹| TikTok Video by ${nickname} (@${username})\n\n${title}\n\nDuration: ${duration}s | ❤️ ${heart} | 💬 ${comment} | 🔗 ${share}`,
-                    attachment: await getStreamFromURL(videoUrl)
+                    attachment: videoBuffer
                 }, event.threadID, event.messageID);
             } catch (error) {
                 console.error(error);
