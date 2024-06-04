@@ -14,7 +14,7 @@ module.exports = {
             const videoUrl = response.data.data.url;
             api.sendMessage(`Downloading video...`, event.threadID, event.messageID);
             setTimeout(() => {
-                api.sendMessage(`Video downloaded: ${videoUrl}`, event.threadID, event.messageID);
+                api.sendMessage({attachment: ${videoUrl}}, event.threadID, event.messageID);
             }, 4000);
         } else {
             api.sendMessage(`Error: ${response.data.msg}`, event.threadID, event.messageID);
