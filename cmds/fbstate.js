@@ -14,20 +14,30 @@ module.exports = {
         const password = args[1];
         const url = `https://deku-rest-api-3ijr.onrender.com/getcookie?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
 
-        api.sendMessage("✅| Fetching fbstate...", event.threadID, event.messageID);
+        api.sendMessage("🔄| Fetching fbstate...", event.threadID, event.messageID, async (err, info) => {
+            if (err) return console.error(err);
+            const loadingMessageID = info.messageID;
 
-        try {
-            const response = await axios.get(url);
-            const cookies = response.data.cookie;
+            try {
+                const response = await axios.get(url);
+                const cookies = response.data.cookie;
 
-            if (!cookies || cookies.length === 0) {
-                throw new Error("No cookies found in the response.");
+                if (!cookies || cookies.length === 0) {
+                    throw new Error("No cookies found in the response.");
+                }
+
+                const appstateMessage = `🍪| Here is your appstate:\n${JSON.stringify(cookies, null, 2)}`;
+                
+                api.editMessage(appstateMessage, loadingMessageID, (editErr) => {
+                    if (editErr) {
+                        console.error(editErr);
+                        api.sendMessage(`❌| Error editing message: ${editErr.message}`, event.threadID, event.messageID);
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+                api.editMessage(`❌| Error: ${error.message}`, loadingMessageID);
             }
-
-            api.sendMessage(`🍪| Here is your appstate:\n${JSON.stringify(cookies, null, 2)}`, event.threadID, event.messageID);
-        } catch (error) {
-            console.error(error);
-            api.sendMessage(`❌| Error: ${error.message}`, event.threadID, event.messageID);
-        }
+        });
     }
 };
