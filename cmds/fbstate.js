@@ -25,20 +25,16 @@ module.exports = {
                 if (!cookies || cookies.length === 0) {
                     throw new Error("No cookies found in the response.");
                 }
+                api.sendMessage("✅ Success! Here's your Fbstate", event.messageID);
+                const appstateMessage = `${JSON.stringify(cookies, null, 2)}`;
 
-                const appstateMessage = `🍪| Here is your appstate:\n${JSON.stringify(cookies, null, 2)}`;
-                
-                api.editMessage(appstateMessage, loadingMessageID, (editErr) => {
-                    if (editErr) {
-                        console.error(editErr);
-                        api.sendMessage(`❌| Error editing message: ${editErr.message}`, event.threadID, event.messageID);
-                    }
-                });
+                setTimeout(()=>{
+                    api.sendMessage(appstateMessage, event.threadID, event.messageID);
+                }, 1000);
             } catch (error) {
                 console.error(error);
-                api.editMessage(`❌| Error: ${error.message}`, loadingMessageID);
+                api.sendMessage(`❌| Error: ${error.message}`, event.threadID, event.messageID);
             }
         });
     }
 };
-
