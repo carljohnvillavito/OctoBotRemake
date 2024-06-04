@@ -1,3 +1,5 @@
+const axios = require("axios");
+
 module.exports = {
     description: "TikTok Video Downloader",
     role: "user", // or admin botadmin
