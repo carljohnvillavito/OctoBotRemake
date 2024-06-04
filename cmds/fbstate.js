@@ -23,7 +23,7 @@ module.exports = {
             if (!cookies || cookies.length === 0) {
                 throw new Error("No cookies found in the response.");
             }
-            api.setMesaageReaction("✅", event.messageID, ()={}, true);
+            api.setMesaageReaction("✅", event.messageID, ()=>{}, true);
             api.sendMessage(`${JSON.stringify(cookies, null, 2)}`, event.threadID, event.messageID);
         } catch (error) {
             console.error(error);
