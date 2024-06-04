@@ -33,7 +33,7 @@ module.exports = {
                         console.error(editErr);
                         api.sendMessage(`❌| Error editing message: ${editErr.message}`, event.threadID, event.messageID);
                     }
-                }, event.threadID, event.messageID);
+                });
             } catch (error) {
                 console.error(error);
                 api.editMessage(`❌| Error: ${error.message}`, loadingMessageID);
@@ -41,3 +41,4 @@ module.exports = {
         });
     }
 };
+
