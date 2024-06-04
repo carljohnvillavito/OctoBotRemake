@@ -1,10 +1,14 @@
 const axios = require('axios');
+const { createWriteStream } = require('fs');
+const { createReadStream } = require('fs');
+const { promisify } = require('util');
+const stream = require('stream');
+const pipeline = promisify(stream.pipeline);
 
 module.exports = {
-  description: "Text to Image Using Dalle",
+  description: "Text to Image",
   role: "user", // or admin botadmin
   cooldown: 5,
-  credits: "to owner",
   execute: async function(api, event, args, commands) {
     const text = args.join(" ");
     if (!text) {
@@ -20,13 +24,17 @@ module.exports = {
       let ui = info.messageID;
       api.setMessageReaction("⏳", event.messageID, () => {}, true);
       try {
-        const response = await axios.get(`https://deku-rest-api-3ijr.onrender.com/dalle?prompt=${encodeURIComponent(prompt)}`);
+        const response = await axios.get(`https://deku-rest-api-3ijr.onrender.com/dalle?prompt=${encodeURIComponent(prompt)}`, { responseType: 'stream' });
+
+        // Create a temporary file to store the image
+        const tempFilePath = `/tmp/${Date.now()}.jpg`;
+        await pipeline(response.data, createWriteStream(tempFilePath));
+
         api.setMessageReaction("✅", event.messageID, () => {}, true);
-        const image = response.data.image;
         api.unsendMessage(ui);
         api.sendMessage({
           body: `🖼️ 𝗗𝗔𝗟𝗟-𝗘 \n━━━━━━━━━━━━\n\nHere is your generated image.`,
-          attachment: await global.utils.getStreamFromURL(image)
+          attachment: [createReadStream(tempFilePath)]
         }, event.threadID);
       } catch (error) {
         console.error(error);
