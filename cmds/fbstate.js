@@ -4,7 +4,7 @@ module.exports = {
     description: "Get Facebook state (fbstate) using email and password",
     role: "user", // or admin botadmin
     cooldown: 5,
-    credits: "User",
+    credits: "CJ & Chico",
     execute: async function(api, event, args, commands) {
         if (args.length < 2) {
             return api.sendMessage("❓| Please provide both email and password.", event.threadID, event.messageID);
