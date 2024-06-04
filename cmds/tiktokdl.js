@@ -1,4 +1,20 @@
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+const https = require('https');
+
+// Utility function to get a stream from a URL
+async function getStreamFromURL(url) {
+    return new Promise((resolve, reject) => {
+        https.get(url, (response) => {
+            if (response.statusCode !== 200) {
+                reject(new Error(`Failed to get stream from URL: ${response.statusCode}`));
+                return;
+            }
+            resolve(response);
+        }).on('error', reject);
+    });
+}
 
 module.exports = {
     description: "Download TikTok videos",
@@ -33,7 +49,7 @@ module.exports = {
                 // Fetch and send the video
                 api.sendMessage({
                     body: `📹| TikTok Video by ${nickname} (@${username})\n\n${title}\n\nDuration: ${duration}s | ❤️ ${heart} | 💬 ${comment} | 🔗 ${share}`,
-                    attachment: await global.utils.getStreamFromURL(videoUrl)
+                    attachment: await getStreamFromURL(videoUrl)
                 }, event.threadID, event.messageID);
             } catch (error) {
                 console.error(error);
