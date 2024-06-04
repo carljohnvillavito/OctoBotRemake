@@ -8,7 +8,7 @@ module.exports = {
     role: "user", // or admin botadmin
     cooldown: 4,
     credits: "to the owner",
-    execute: async function(api, event, args, commands) {
+    async execute(api, event, args, commands) {
         const tiktokLink = args.join(" ");
         if (!tiktokLink) {
             return api.sendMessage("❓| Please provide a TikTok link.", event.threadID, event.messageID);
@@ -19,19 +19,18 @@ module.exports = {
             if (err) return console.error(err);
 
             try {
-                const response = await axios.get(`https://eurix-api.replit.app/tikdl?link=${encodeURIComponent(tiktokLink)}`);
-                if (response.data.code !== "200") {
-                    throw new Error(response.data.msg);
+                const response = await axios.get(`https://markdevs-last-api-a4sm.onrender.com/api/tiktokdl?link=${encodeURIComponent(tiktokLink)}`);
+                if (!response.data.url) {
+                    throw new Error("Failed to fetch video");
                 }
 
-                const videoUrl = response.data.data.url;
-                const username = response.data.data.username;
-                const nickname = response.data.data.nickname;
-                const title = response.data.data.title;
-                const duration = response.data.data.duration;
-                const heart = response.data.data.heart;
-                const comment = response.data.data.comment;
-                const share = response.data.data.share;
+                const videoUrl = response.data.url;
+                const username = response.data.username;
+                const nickname = response.data.nickname;
+                const title = response.data.title;
+                const like = response.data.like;
+                const comment = response.data.comment;
+                const views = response.data.views;
 
                 // Fetch the video as a stream
                 const videoResponse = await axios({
@@ -45,7 +44,7 @@ module.exports = {
 
                 // Send the video as an attachment
                 api.sendMessage({
-                    body: `📹| TikTok Video by ${nickname} (@${username})\n\n${title}\n\nDuration: ${duration}s | ❤️ ${heart} | 💬 ${comment} | 🔗 ${share}`,
+                    body: `📹| TikTok Video by ${nickname} (@${username})\n\n${title}\n\nViews: ${views} | ❤️ ${like} | 💬 ${comment}`,
                     attachment: stream
                 }, event.threadID, event.messageID);
             } catch (error) {
