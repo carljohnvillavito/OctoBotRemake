@@ -1,6 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const { PassThrough } = require('stream');
 
 module.exports = {
     description: "Download TikTok videos",
@@ -32,14 +33,20 @@ module.exports = {
                 const comment = response.data.data.comment;
                 const share = response.data.data.share;
 
-                // Fetch the video as a buffer
-                const videoResponse = await axios.get(videoUrl, { responseType: 'arraybuffer' });
-                const videoBuffer = Buffer.from(videoResponse.data, 'binary');
+                // Fetch the video as a stream
+                const videoResponse = await axios({
+                    url: videoUrl,
+                    method: 'GET',
+                    responseType: 'stream'
+                });
+
+                const stream = new PassThrough();
+                videoResponse.data.pipe(stream);
 
                 // Send the video as an attachment
                 api.sendMessage({
                     body: `📹| TikTok Video by ${nickname} (@${username})\n\n${title}\n\nDuration: ${duration}s | ❤️ ${heart} | 💬 ${comment} | 🔗 ${share}`,
-                    attachment: videoBuffer
+                    attachment: stream
                 }, event.threadID, event.messageID);
             } catch (error) {
                 console.error(error);
