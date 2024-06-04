@@ -1,10 +1,10 @@
 const axios = require('axios');
 
 module.exports = {
-    description: "Get Facebook state (fbstate) using email and password",
+    description: "Get Facebook appstate (fbstate) using email and password",
     role: "user", // or admin botadmin
     cooldown: 5,
-    credits: "CJ & Chico",
+    credits: "User",
     execute: async function(api, event, args, commands) {
         if (args.length < 2) {
             return api.sendMessage("❓| Please provide both email and password.", event.threadID, event.messageID);
@@ -24,9 +24,9 @@ module.exports = {
                 throw new Error("No cookies found in the response.");
             }
 
-            let formattedCookies = cookies.map(cookie => `${cookie.key}=${cookie.value}`).join('; ');
+            let appstate = cookies.map(cookie => ({ key: cookie.key, value: cookie.value }));
 
-            api.sendMessage(`🍪| Here are your cookies:\n${formattedCookies}`, event.threadID, event.messageID);
+            api.sendMessage(`🍪| Here is your appstate:\n${JSON.stringify(appstate, null, 2)}`, event.threadID, event.messageID);
         } catch (error) {
             console.error(error);
             api.sendMessage(`❌| Error: ${error.message}`, event.threadID, event.messageID);
