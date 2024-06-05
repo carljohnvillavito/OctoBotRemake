@@ -3,7 +3,7 @@ const axios = require('axios');
 module.exports = {
     description: "Generate a raw Pastebin link containing the user inputs.",
     role: "user", // or admin botadmin
-    cooldown: 5,
+    cooldown: 10,
     credits: "CJ & Chico",
     execute: function(api, event, args, commands) {
         const text = args.join(" ");
