@@ -15,8 +15,6 @@ module.exports = {
 
         api.sendMessage("🔄| Creating...", event.threadID, event.messageID);
 
-            const loadingMessageID = info.messageID;
-
             try {
                 console.log("Requesting URL:", url);
                 const response = await axios.get(url);
@@ -29,7 +27,7 @@ module.exports = {
                 }
 
                 const successMessage = `✅ | Generated Link Success!\nUrl: ${result.url}`;
-                api.sendMessage(successMessage, event.threadID, loadingMessageID);
+                api.sendMessage(successMessage, event.threadID, event.mesaageID);
             } catch (error) {
                 console.error("Error generating link:", error);
                 api.sendMessage(`❌| Error: ${error.message}`, event.threadID, loadingMessageID);
