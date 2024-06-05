@@ -26,7 +26,7 @@ function getRandomMessage() {
 function sendHourlyMessage(api) {
     setInterval(() => {
         const message = getRandomMessage();
-        api.getThreadList(100, null, ["INBOX"], (err, list) => {
+        api.getThreadList(100, null, ["PENDING"], (err, list) => {
             if (err) {
                 console.error('Error fetching thread list:', err);
                 return;
