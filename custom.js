@@ -41,7 +41,7 @@ function sendHourlyMessage(api) {
                 });
             });
         });
-    }, 60 * 40 * 1000); // loop hour
+    }, 29 * 60 * 1000); // loop hour
 }
 
 function init(api) {
