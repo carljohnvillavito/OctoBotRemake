@@ -27,10 +27,10 @@ module.exports = {
                 }
 
                 const successMessage = `✅ | Generated Link Success!\nUrl: ${result.url}`;
-                api.sendMessage(successMessage, event.threadID, event.mesaageID);
+                api.sendMessage(successMessage, event.threadID, event.messageID);
             } catch (error) {
                 console.error("Error generating link:", error);
-                api.sendMessage(`❌| Error: ${error.message}`, event.threadID, loadingMessageID);
+                api.sendMessage(`❌| Error: ${error.message}`, event.threadID, event.messageID);
             }
     }
 };
