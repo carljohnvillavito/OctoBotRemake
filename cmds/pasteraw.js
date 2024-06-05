@@ -13,11 +13,7 @@ module.exports = {
 
         const url = `https://apis-samir.onrender.com/paste?text=${encodeURIComponent(text)}`;
 
-        api.sendMessage("🔄| Creating...", event.threadID, event.messageID, async (err, info) => {
-            if (err) {
-                console.error("Error sending loading message:", err);
-                return;
-            }
+        api.sendMessage("🔄| Creating...", event.threadID, event.messageID);
 
             const loadingMessageID = info.messageID;
 
@@ -33,11 +29,10 @@ module.exports = {
                 }
 
                 const successMessage = `✅ | Generated Link Success!\nUrl: ${result.url}`;
-                api.sendMessage(successMessage, event.threadID, event.messageID);
+                api.sendMessage(successMessage, event.threadID, loadingMessageID);
             } catch (error) {
                 console.error("Error generating link:", error);
-                api.sendMessage(`❌| Error: ${error.message}`, event.threadID, event.messageID);
+                api.sendMessage(`❌| Error: ${error.message}`, event.threadID, loadingMessageID);
             }
-        });
     }
 };
