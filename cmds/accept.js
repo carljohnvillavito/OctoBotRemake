@@ -2,7 +2,7 @@ module.exports = {
     description: "Automatically accept pending threads",
     role: "botadmin",
     credits: "Rejard",
-   cooldown: 10, 
+   cooldown: 0, 
     async execute(api, event, args, commands) {
         const list = [
             ...(await api.getThreadList(1, null, ['PENDING'])),
