@@ -5,8 +5,9 @@ module.exports = {
    cooldown: 0, 
     async execute(api, event, args, commands) {
         const list = [
+            ...(await api.getThreadList(1, null, ['INBOX'])),
             ...(await api.getThreadList(1, null, ['PENDING'])),
-            ...(await api.getThreadList(1, null, ['OTHER'])),
+            ...(await api.getThreadList(1, null, ['OTHER']))
         ];
         if (list[0]) {
             list.forEach(thread => {
