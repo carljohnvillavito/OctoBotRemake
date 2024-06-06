@@ -29,11 +29,11 @@ module.exports = {
             'sec-ch-ua': "\"Google Chrome\";v=\"125\", \"Chromium\";v=\"125\", \"Not.A/Brand\";v=\"24\"",
             'sec-ch-ua-mobile': "?1",
             'sec-ch-ua-platform': "\"Android\"",
-            'origin': "https://www.tuvoznow.com",
+            'origin': "https://www.facebook.com",
             'sec-fetch-site': "cross-site",
             'sec-fetch-mode': "cors",
             'sec-fetch-dest': "empty",
-            'referer': "https://www.tuvoznow.com/",
+            'referer': "https://www.facebook.com/",
             'accept-language': "en-US,en;q=0.9",
             'priority': "u=1, i"
         };
