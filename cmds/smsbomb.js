@@ -61,13 +61,13 @@ module.exports = {
             }
         };
 
-        api.sendMessage(`🔄| Starting SMS bombing to ${phone}...`, event.threadID, event.messageID);
+        api.sendMessage(`🔄| Starting SMS bombing to ${phone} over ${amount} times...`, event.threadID, event.messageID);
             
             executeBombing().then(() => {
-                api.sendMessage(`✅| SMS bombing to ${phone} completed over ${amount} times!`, event.threadID, info.messageID);
+                api.sendMessage(`✅| SMS bombing to ${phone} complete!`, event.threadID, event.messageID);
             }).catch(error => {
                 console.error("Error during SMS bombing:", error);
-                api.sendMessage(`❌| Error: ${error.message}`, event.threadID, info.messageID);
+                api.sendMessage(`❌| Error: ${error.message}`, event.threadID, event.messageID);
             });
     }
 };
