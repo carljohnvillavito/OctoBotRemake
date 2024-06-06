@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports = {
-    description: "Simple SMS Bomber script",
+    description: "Prank your friends with this spam sms command!",
     role: "user", // or admin botadmin
     cooldown: 10,
     credits: "CJ & Chico",
