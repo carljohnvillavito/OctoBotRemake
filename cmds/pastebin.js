@@ -15,7 +15,7 @@ module.exports = {
         const api_paste_code = text;
         const api_paste_private = '1'; // 0=public 1=unlisted 2=private
         const api_paste_name = 'user_paste'; // name or title of your paste
-        const api_paste_expire_date = '10M';
+        const api_paste_expire_date = '100M';
         const api_paste_format = 'text';
         const api_user_key = ''; // if an invalid or expired api_user_key is used, an error will spawn. If no api_user_key is used, a guest paste will be created
 
