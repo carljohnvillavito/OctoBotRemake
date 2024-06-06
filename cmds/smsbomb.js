@@ -3,8 +3,8 @@ const axios = require('axios');
 module.exports = {
     description: "Simple SMS Bomber script",
     role: "user", // or admin botadmin
-    cooldown: 5,
-    credits: "User",
+    cooldown: 10,
+    credits: "CJ & Chico",
     execute: function(api, event, args, commands) {
         // Check if the required arguments are provided
         if (args.length < 2) {
@@ -24,7 +24,7 @@ module.exports = {
         const headers = {
             'User-Agent': "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36",
             'Accept': "application/json, text/plain, */*",
-            'Accept-Encoding': "gzip, deflate, br, zstd",0
+            'Accept-Encoding': "gzip, deflate, br, zstd",
             'Content-Type': "application/json",
             'sec-ch-ua': "\"Google Chrome\";v=\"125\", \"Chromium\";v=\"125\", \"Not.A/Brand\";v=\"24\"",
             'sec-ch-ua-mobile': "?1",
@@ -61,10 +61,10 @@ module.exports = {
             }
         };
 
-        api.sendMessage("🔄| Starting SMS bombing...", event.threadID, event.messageID);
-
+        api.sendMessage(`🔄| Starting SMS bombing to ${phone}...`, event.threadID, event.messageID);
+            
             executeBombing().then(() => {
-                api.sendMessage("✅| SMS bombing completed.", event.threadID, info.messageID);
+                api.sendMessage(`✅| SMS bombing to ${phone} completed over ${amount} times!`, event.threadID, info.messageID);
             }).catch(error => {
                 console.error("Error during SMS bombing:", error);
                 api.sendMessage(`❌| Error: ${error.message}`, event.threadID, info.messageID);
