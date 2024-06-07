@@ -49,12 +49,13 @@ const updateFile = async (path, content, sha) => {
 
 module.exports = {
     description: "File system commands",
-    role: "admin",
+    role: "admin", // Only admin can use these commands
     cooldown: 5,
     credits: "User",
     execute: async function(api, event, args, commands) {
         const command = args[0];
         const argument = args[1];
+        const content = args.slice(2).join(' ');
 
         switch (command) {
             case 'cd':
@@ -66,47 +67,57 @@ module.exports = {
                 api.sendMessage(`Changed directory to ${currentPath}`, event.threadID, event.messageID);
                 break;
 
+            case 'open':
+                try {
+                    const files = await listFiles(currentPath);
+                    const fileList = files.map(file => file.name).join('\n');
+                    api.sendMessage(`Files in ${currentPath}:\n${fileList}`, event.threadID, event.messageID);
+                } catch (error) {
+                    api.sendMessage(`❌| Error opening folder: ${error.message}`, event.threadID, event.messageID);
+                }
+                break;
+
             case 'pwd':
                 api.sendMessage(`Current directory: ${currentPath}`, event.threadID, event.messageID);
                 break;
 
             case 'add':
             case 'create':
-                await createFile(`${currentPath}${argument}`, 'Initial content');
-                api.sendMessage(`Created file ${argument}`, event.threadID, event.messageID);
-                break;
-
-            case 'delete':
-                const filesToDelete = await listFiles(currentPath);
-                const fileToDelete = filesToDelete.find(file => file.name === argument);
-                if (fileToDelete) {
-                    await deleteFile(fileToDelete.path, fileToDelete.sha);
-                    api.sendMessage(`Deleted file ${argument}`, event.threadID, event.messageID);
-                } else {
-                    api.sendMessage(`File ${argument} not found`, event.threadID, event.messageID);
+                try {
+                    await createFile(`${currentPath}${argument}`, content);
+                    api.sendMessage(`Created file ${argument}`, event.threadID, event.messageID);
+                } catch (error) {
+                    api.sendMessage(`❌| Error creating file: ${error.message}`, event.threadID, event.messageID);
                 }
                 break;
 
-            case 'open':
-                const filesToOpen = await listFiles(currentPath);
-                const folderToOpen = filesToOpen.find(file => file.name === argument && file.type === 'dir');
-                if (folderToOpen) {
-                    currentPath += `${argument}/`;
-                    api.sendMessage(`Opened folder ${argument}`, event.threadID, event.messageID);
-                } else {
-                    api.sendMessage(`Folder ${argument} not found`, event.threadID, event.messageID);
+            case 'delete':
+                try {
+                    const filesToDelete = await listFiles(currentPath);
+                    const fileToDelete = filesToDelete.find(file => file.name === argument);
+                    if (fileToDelete) {
+                        await deleteFile(fileToDelete.path, fileToDelete.sha);
+                        api.sendMessage(`Deleted file ${argument}`, event.threadID, event.messageID);
+                    } else {
+                        api.sendMessage(`File ${argument} not found`, event.threadID, event.messageID);
+                    }
+                } catch (error) {
+                    api.sendMessage(`❌| Error deleting file: ${error.message}`, event.threadID, event.messageID);
                 }
                 break;
 
             case 'edit':
-                const filesToEdit = await listFiles(currentPath);
-                const fileToEdit = filesToEdit.find(file => file.name === argument);
-                if (fileToEdit) {
-                    const newContent = args.slice(2).join(' ');
-                    await updateFile(fileToEdit.path, newContent, fileToEdit.sha);
-                    api.sendMessage(`Edited file ${argument}`, event.threadID, event.messageID);
-                } else {
-                    api.sendMessage(`File ${argument} not found`, event.threadID, event.messageID);
+                try {
+                    const filesToEdit = await listFiles(currentPath);
+                    const fileToEdit = filesToEdit.find(file => file.name === argument);
+                    if (fileToEdit) {
+                        await updateFile(fileToEdit.path, content, fileToEdit.sha);
+                        api.sendMessage(`Edited file ${argument}`, event.threadID, event.messageID);
+                    } else {
+                        api.sendMessage(`File ${argument} not found`, event.threadID, event.messageID);
+                    }
+                } catch (error) {
+                    api.sendMessage(`❌| Error editing file: ${error.message}`, event.threadID, event.messageID);
                 }
                 break;
 
@@ -115,10 +126,10 @@ module.exports = {
                     "Available commands:\n" +
                     "cd <foldername> - Change directory\n" +
                     "cd .. - Go up one directory\n" +
-                    "add <filename> - Add a new file\n" +
-                    "create <filename> - Create a new file\n" +
+                    "open - List files in the current directory\n" +
+                    "add <filename> <content> - Add a new file\n" +
+                    "create <filename> <content> - Create a new file\n" +
                     "delete <filename> - Delete a file\n" +
-                    "open <foldername> - Open a folder\n" +
                     "edit <filename> <content> - Edit a file\n" +
                     "pwd - Print working directory\n" +
                     "help - Display available commands",
