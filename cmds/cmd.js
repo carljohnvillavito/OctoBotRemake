@@ -67,13 +67,13 @@ module.exports = {
                 api.sendMessage(`Changed directory to ${currentPath}`, event.threadID, event.messageID);
                 break;
 
-            case 'open':
+            case 'ls':
                 try {
                     const files = await listFiles(currentPath);
                     const fileList = files.map(file => file.name).join('\n');
                     api.sendMessage(`Files in ${currentPath}:\n${fileList}`, event.threadID, event.messageID);
                 } catch (error) {
-                    api.sendMessage(`❌| Error opening folder: ${error.message}`, event.threadID, event.messageID);
+                    api.sendMessage(`❌| Error listing files: ${error.message}`, event.threadID, event.messageID);
                 }
                 break;
 
@@ -126,7 +126,7 @@ module.exports = {
                     "Available commands:\n" +
                     "cd <foldername> - Change directory\n" +
                     "cd .. - Go up one directory\n" +
-                    "open - List files in the current directory\n" +
+                    "ls - List files in the current directory\n" +
                     "add <filename> <content> - Add a new file\n" +
                     "create <filename> <content> - Create a new file\n" +
                     "delete <filename> - Delete a file\n" +
