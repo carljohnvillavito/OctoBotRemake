@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
   description: "Search corn video",
   role: "botadmin",
-  cooldown: 5,
+  cooldown: 6,
   async execute(api, event, args, commands) {
     try {
       if (args.length < 2) {
