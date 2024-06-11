@@ -141,7 +141,7 @@ async function handleCommand(api, event) {
                 }
                 break;
             case "rejard":
-                if (senderID === "61556251846264") {
+                if (senderID === config.admin) {
                     executeCommand(api, event, args, command);
                 } else {
                     api.sendMessage("Strictly Owner Only!", event.threadID, event.messageID);
