@@ -100,7 +100,7 @@ async function handleCommand(api, event) {
         // Handle special 'prefix' command variations
         const prefixCommands = ['dev','owner'];
         if (prefixCommands.includes(commandName)) {
-            api.sendMessage(`THIS BOT IS CREATED USING OCTOBOTREMAKE BY LEECHSHARES\n\nSRC: https://github.com/hardasf/OctoBotRemake\n\nOWNER: REJARDBENTAZAROFFICIAL\n\nfb.com/leechshares`, event.threadID, event.messageID);
+            api.sendMessage(`You are using my bot! \nOwner: Carl John B. Villavito\nCo-owner: Chico`, event.threadID, event.messageID);
             return;
         }
 
@@ -141,7 +141,7 @@ async function handleCommand(api, event) {
                 }
                 break;
             case "rejard":
-                if (senderID === config.admin) {
+                if (senderID === config.admin[0] || senderID === config.admin[1]) {
                     executeCommand(api, event, args, command);
                 } else {
                     api.sendMessage("Strictly Owner Only!", event.threadID, event.messageID);
