@@ -272,6 +272,20 @@ login({ appState: appState }, (err, api) => {
             console.error('Error reading sim.json:', err);
         }
 
+        //random messages for any users
+        const messages = [
+            'Hi good day too you!',
+            'Have a nice day ahead!',
+            'Whats good yo?',
+            'Hi! Nice to meet you!'
+        ];
+
+        messages.sort(() => Math.random() - 0.5);
+
+        if(typeof event.body === "string" && ['hi', 'Hello', 'Hi', 'hello', 'Hello there'].includes(event.body)){
+            api.sendMessage(messages.join(`\n`), event.threadID, event.messageID);
+        }
+
         // Check if the message body matches any of the specified keywords
         if (typeof event.body === 'string' && ['Ai', 'ai', 'Help', 'help'].includes(event.body)) {
                         api.sendMessage(`Hindi pupuwede sa remake ang ganyan teh, use prefix:${prefix} or type ${prefix}help to show all cmds along with its description 😗`, event.threadID, event.messageID);
