@@ -280,10 +280,10 @@ login({ appState: appState }, (err, api) => {
             'Hi! Nice to meet you!'
         ];
 
-        messages.sort(() => Math.random() - 0.5);
+        const randomMsg = Math.floor(Math.random() * messages.length);
 
         if(typeof event.body === "string" && ['hi', 'Hello', 'Hi', 'hello', 'Hello there'].includes(event.body)){
-            api.sendMessage(messages.join(`\n`), event.threadID, event.messageID);
+            api.sendMessage(return messages[randomMsg], event.threadID, event.messageID);
         }
 
         // Check if the message body matches any of the specified keywords
