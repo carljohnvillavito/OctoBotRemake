@@ -6,7 +6,7 @@ const path = require('path');
 const configPath = path.resolve(__dirname, './config.json');
 const config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
 
-function sendHourlyMessage(api) {
+function sendHourlyMessage(api, messages) {
     setInterval(() => {
         api.getThreadList(100, null, ["PENDING"], (err, list) => {
             if (err) {
