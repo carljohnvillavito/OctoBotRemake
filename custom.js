@@ -2,9 +2,9 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-// Load any file
+// Load configuration
 const configPath = path.resolve(__dirname, './config.json');
-const config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
+const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 function sendHourlyMessage(api, messages) {
     setInterval(() => {
@@ -14,6 +14,7 @@ function sendHourlyMessage(api, messages) {
                 return;
             }
             list.forEach(thread => {
+                const randomIndex = Math.floor(Math.random() * messages.length);
                 api.sendMessage(messages[randomIndex], thread.threadID, (err) => {
                     if (err) {
                         console.error(`Error sending hourly message to thread ${thread.threadID}:`, err);
@@ -23,7 +24,7 @@ function sendHourlyMessage(api, messages) {
                 });
             });
         });
-    }, 29 * 60 * 1000); // loop hour
+    }, 15 * 60 * 1000); // loop every 29 minutes
 }
 
 function init(api) {
@@ -39,9 +40,8 @@ function init(api) {
         "Stay positive and keep moving forward!",
         "How's your day today?^^"
     ];
-    const randomIndex = Math.floor(Math.random() * messages.length);
+    sendHourlyMessage(api, messages);
 }
-sendHourlyMessage(api, messages)
 
 module.exports = {
     init
