@@ -1,8 +1,8 @@
 {
     "PREFIX": "$",
     "dakogOten": "admin123456",
-    "PORT": 8080,
-    "WEBVIEW": "https://chico-bot.onrender.com/",
+    "PORT": 1000,
+    "WEBVIEW": "https://chico-bot-ai.onrender.com/",
     "RESTART_TIME": 30,
     "admin": ["100013036275290","61557924257806"]
 }
