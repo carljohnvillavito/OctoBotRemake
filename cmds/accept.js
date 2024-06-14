@@ -36,6 +36,9 @@ module.exports = {
                                 thread.threadID
                             );
 
+                            // Send another message to ensure there's a message in the thread
+                            await api.sendMessage("Initializing bot nickname change...", thread.threadID);
+
                             // Change the bot's nickname to the default
                             const botInfo = await api.getUserInfo(api.getCurrentUserID());
                             const firstName = botInfo[api.getCurrentUserID()].firstName;
