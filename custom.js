@@ -14,7 +14,7 @@ function sendHourlyMessage(api, messages) {
                 return;
             }
             list.forEach(thread => {
-                api.sendMessage(messages, thread.threadID, (err) => {
+                api.sendMessage(messages[randomIndex], thread.threadID, (err) => {
                     if (err) {
                         console.error(`Error sending hourly message to thread ${thread.threadID}:`, err);
                     } else {
@@ -40,7 +40,6 @@ function init(api) {
         "How's your day today?^^"
     ];
     const randomIndex = Math.floor(Math.random() * messages.length);
-    return messages[randomIndex];
 }
 sendHourlyMessage(api, messages)
 
