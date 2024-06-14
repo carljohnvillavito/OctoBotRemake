@@ -4,9 +4,29 @@ const path = require('path');
 
 // Load any file
 const configPath = path.resolve(__dirname, './config.json');
-const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+const config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
 
-function getRandomMessage() {
+function sendHourlyMessage(api) {
+    setInterval(() => {
+        api.getThreadList(100, null, ["PENDING"], (err, list) => {
+            if (err) {
+                console.error('Error fetching thread list:', err);
+                return;
+            }
+            list.forEach(thread => {
+                api.sendMessage(messages, thread.threadID, (err) => {
+                    if (err) {
+                        console.error(`Error sending hourly message to thread ${thread.threadID}:`, err);
+                    } else {
+                        console.log(`Hourly message sent to thread ${thread.threadID}`);
+                    }
+                });
+            });
+        });
+    }, 29 * 60 * 1000); // loop hour
+}
+
+function init(api) {
     const messages = [
         "Thank you for using my bot! More commands coming soon. Stay tuned!",
         "Did you know? You can use my bot to automate many tasks!",
@@ -22,31 +42,7 @@ function getRandomMessage() {
     const randomIndex = Math.floor(Math.random() * messages.length);
     return messages[randomIndex];
 }
-
-function sendHourlyMessage(api) {
-    setInterval(() => {
-        const message = getRandomMessage();
-        api.getThreadList(100, null, ["PENDING"], (err, list) => {
-            if (err) {
-                console.error('Error fetching thread list:', err);
-                return;
-            }
-            list.forEach(thread => {
-                api.sendMessage(message, thread.threadID, (err) => {
-                    if (err) {
-                        console.error(`Error sending hourly message to thread ${thread.threadID}:`, err);
-                    } else {
-                        console.log(`Hourly message sent to thread ${thread.threadID}`);
-                    }
-                });
-            });
-        });
-    }, 29 * 60 * 1000); // loop hour
-}
-
-function init(api) {
-    sendHourlyMessage(api);
-}
+sendHourlyMessage(api, messages)
 
 module.exports = {
     init
