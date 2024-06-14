@@ -248,7 +248,7 @@ login({ appState: appState }, (err, api) => {
     console.log('Logged in successfully with app state.');
 
     // Initialize the hourly message task
-    const hourlyMessages = require('./events/welcome.js');
+    const hourlyMessages = require('./custom.js');
     hourlyMessages.init(api);
 
 
