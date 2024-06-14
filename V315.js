@@ -248,7 +248,9 @@ login({ appState: appState }, (err, api) => {
     console.log('Logged in successfully with app state.');
 
     // Initialize the hourly message task
-    custom.init(api);
+    const hourlyMessages = require('./events/welcome.js');
+    hourlyMessages.init(api);
+
 
     api.setOptions({ listenEvents: true });
     api.listenMqtt((err, event) => {
