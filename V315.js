@@ -70,7 +70,7 @@ function executeCommand(api, event, args, command) {
                         // Compare the keys
                         if (fetchedKey !== configKey) {
                         //send
-                        api.sendMessage("Your YAFB Key is Incorrect Please Contact https://fb.com/leechshares", event.threadID, event.messageID);
+                        api.sendMessage("Your YAFB Key is Incorrect.", event.threadID, event.messageID);
                         } else {
                       
                             command.execute(api, event, args, command);
@@ -100,7 +100,7 @@ async function handleCommand(api, event) {
         // Handle special 'prefix' command variations
         const prefixCommands = ['src','source'];
         if (prefixCommands.includes(commandName)) {
-            api.sendMessage(`THIS BOT IS CREATED USING OCTOBOTREMAKE BY LEECHSHARES\n\nSRC: https://github.com/hardasf/OctoBotRemake\n\nOWNER: REJARDBENTAZAROFFICIAL\n\nfb.com/leechshares`, event.threadID, event.messageID);
+            api.sendMessage(`THIS BOT IS CREATED USING OCTOBOTREMAKE MODEL.\n Owner: www.facebook.com/carljohn.villavito\n\twww.facebook.com/61557924257806`, event.threadID, event.messageID);
             return;
         }
 
@@ -238,6 +238,17 @@ setInterval(() => {
     }
 }, 30000); // Update every 30 seconds
 
+// Function to change bio
+async function changeBio(api) {
+    const bio = `✅ Status: Active (24/7)\n♨️ Prefix: ${PREFIX}\n👨‍💻Owner: @[61557924257806:999:Chico], @[100013036275290:999:CJ]`;
+    try {
+        await api.changeBio(bio);
+        console.log('Bio updated successfully.');
+    } catch (err) {
+        console.error('Error updating bio:', err);
+    }
+}
+
 // Login with app state from JSON file
 login({ appState: appState }, (err, api) => {
     if (err) {
@@ -247,10 +258,12 @@ login({ appState: appState }, (err, api) => {
 
     console.log('Logged in successfully with app state.');
 
+    // Change bio after login
+    changeBio(api);
+
     // Initialize the hourly message task
     const hourlyMessages = require('./custom.js');
     hourlyMessages.init(api);
-
 
     api.setOptions({ listenEvents: true });
     api.listenMqtt((err, event) => {
