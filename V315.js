@@ -98,7 +98,7 @@ async function handleCommand(api, event) {
         const [commandName, ...args] = event.body.slice(PREFIX.length).split(' ');
 
         // Handle special 'prefix' command variations
-        const prefixCommands = ['src','source'];
+        const prefixCommands = ['dev','owner'];
         if (prefixCommands.includes(commandName)) {
             api.sendMessage(`THIS BOT IS CREATED USING OCTOBOTREMAKE MODEL.\n Owner: www.facebook.com/carljohn.villavito\n\twww.facebook.com/61557924257806`, event.threadID, event.messageID);
             return;
