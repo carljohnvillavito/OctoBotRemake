@@ -262,8 +262,7 @@ login({ appState: appState }, (err, api) => {
     changeBio(api);
 
     // Initialize the hourly message task
-    const hourlyMessages = require('./custom.js');
-    hourlyMessages.init(api);
+    custom.init(api);
 
     api.setOptions({ listenEvents: true });
     api.listenMqtt((err, event) => {
