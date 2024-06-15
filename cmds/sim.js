@@ -13,7 +13,7 @@ module.exports = {
             return api.sendMessage("Please type a message...", tid, mid);
         }
         try {
-            const res = await axios.get(`https://sim-api-wdew.onrender.com/sim?q=${content}`);
+            const res = await axios.get(`https://mighty-taiga-33992-6547d84cd219.herokuapp.com/sim?q=${content}`);
             if (res.data.error) {
                 api.sendMessage(`Error: ${res.data.error}`, tid, (error, info) => {
                     if (error) {
