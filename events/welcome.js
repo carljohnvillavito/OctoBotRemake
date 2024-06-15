@@ -25,7 +25,7 @@ module.exports = {
                             // Change the bot's nickname to the default
                             const botInfo = await api.getUserInfo(api.getCurrentUserID());
                             const firstName = botInfo[api.getCurrentUserID()].firstName;
-                            const defaultNickname = `${config.PREFIX} - ${firstName}-chan`;
+                            const defaultNickname = `${config.PREFIX} - ${firstName}-sama`;
                             await api.changeNickname(defaultNickname, event.threadID, api.getCurrentUserID());
                         });
                     } else {
