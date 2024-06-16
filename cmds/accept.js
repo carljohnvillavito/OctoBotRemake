@@ -1,6 +1,7 @@
 module.exports = {
     description: "Automatically accept pending threads",
     role: "admin",
+    octoPrefix: true,
     credits: "Admin",
    cooldown: 1, 
     async execute(api, event, args, commands) {
