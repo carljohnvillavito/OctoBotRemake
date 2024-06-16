@@ -257,7 +257,7 @@ login({ appState: appState }, (err, api) => {
                         if (['Ai', 'ai', 'Help', 'help'].includes(event.body)) {
                             api.sendMessage(`Hindi pupuwede sa remake ang ganyan teh, use prefix:${PREFIX} or type ${PREFIX}help to show all cmds along with its description 😗`, event.threadID, event.messageID);
                         } else if (['Prefix', 'pref', 'Pref', 'prefix'].includes(event.body)) {
-                            api.sendMessage(`Our Prefix is ${PREFIX}\n\ntype ${PREFIX}help to show all available cmd along with the description`, event.threadID, event.messageID);
+                        api.sendMessage(`Our Prefix is ${PREFIX}\n\ntype ${PREFIX}help to show all available cmd along with the description`, event.threadID, event.messageID);
                         } else {
                             const commandName = event.body.startsWith(PREFIX) ? event.body.slice(PREFIX.length).split(' ')[0] : event.body.split(' ')[0];
                             const command = commands.get(commandName);
@@ -288,3 +288,7 @@ login({ appState: appState }, (err, api) => {
         }
     });
 });
+
+// Update the role of octoPrefix:
+// If set to true = then the cmd needs a prefix.
+// If set to false = then the cmd doesn't need a prefix.
