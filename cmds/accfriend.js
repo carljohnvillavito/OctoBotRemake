@@ -5,6 +5,7 @@ module.exports = {
     role: "user", // or admin botadmin
     cooldown: 8,
     octoPrefix: true, // or false
+    credits: "Chico & CJ",
     execute: async function(api, event, args, commands) {
         if (!args.length) {
             return api.sendMessage("Usage: {PREFIX}accfriend <add|del> <target number|\"all\">", event.threadID, event.messageID);
