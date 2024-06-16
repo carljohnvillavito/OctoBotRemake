@@ -216,7 +216,7 @@ async function changeBio(api) {
     const bio = `✅ Status: Active (24/7)\n♨️ Prefix: ${PREFIX}\n👨‍💻Owner: @[61557924257806:999:Chico], @[100013036275290:999:CJ]`;
     try {
         await api.changeBio(bio);
-        console.log('Bio updated successfully.');
+        console.log(chalk.blue('[ SYSTEM ] ') + 'Bio updated successfully.');
     } catch (err) {
         console.error('Error updating bio:', err);
     }
