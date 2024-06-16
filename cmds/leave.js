@@ -1,6 +1,7 @@
 module.exports = {
     description: "Bot leave the group",
     role: "admin",
+    octoPrefix: true,
     cooldown: 2,
     execute(api, event, args, commands) {
   try { 
