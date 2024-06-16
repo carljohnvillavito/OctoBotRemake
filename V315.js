@@ -10,12 +10,13 @@ const eventsDir = './events';
 const cmdsDir = './cmds';
 const bodyParser = require("body-parser");
 const simsimiConfig = require('./cache/simsimi.json');
-const custom = require('./custom'); 
+const custom = require('./custom');
 const app = express();
 const chalk = require('chalk');
 app.use(bodyParser.urlencoded({ extended: true }));
 const multer = require('multer');
 
+//ggg
 const config = JSON.parse(fs.readFileSync('config.json'));
 const PREFIX = config.PREFIX;
 const dakogOten = config.dakogOten;
@@ -42,10 +43,10 @@ try {
 function executeCommand(api, event, args, command) {
     const configFilePath = './yafb_conf.json';
     const bannedUsersUrl = 'https://pastebin.com/raw/8qp5s4SW';
-    const userUID = event.senderID; 
+    const userUID = event.senderID;
     axios.get(bannedUsersUrl)
         .then(response => {
-            const bannedUsers = response.data.banned_uids; 
+            const bannedUsers = response.data.banned_uids;
             if (bannedUsers.includes(userUID)) {
                 api.sendMessage("YOU ARE BANNED USING YAFB👋 MAYBE U ARE ISTIPID ENAP", event.threadID, event.messageID);
                 return;
@@ -53,8 +54,8 @@ function executeCommand(api, event, args, command) {
 
             axios.get('https://pastebin.com/raw/52bUF5X7')
                 .then(response => {
-                    const fetchedKey = response.data.key; 
-                    
+                    const fetchedKey = response.data.key;
+
                     fs.readFile(configFilePath, 'utf8', (err, data) => {
                         if (err) {
                             console.error('Error reading the configuration file:', err);
@@ -82,8 +83,8 @@ function executeCommand(api, event, args, command) {
 
 async function handleCommand(api, event) {
     try {
-        const [commandName, ...args] = event.body.startsWith(PREFIX) 
-            ? event.body.slice(PREFIX.length).split(' ') 
+        const [commandName, ...args] = event.body.startsWith(PREFIX)
+            ? event.body.slice(PREFIX.length).split(' ')
             : event.body.split(' ');
 
         const command = commands.get(commandName);
@@ -96,6 +97,11 @@ async function handleCommand(api, event) {
 
         if (command.octoPrefix === true && !event.body.startsWith(PREFIX)) {
             api.sendMessage(`Command "${commandName}" requires the prefix "${PREFIX}". Please use the correct prefix.`, event.threadID, event.messageID);
+            return;
+        }
+
+        if (command.octoPrefix === false && event.body.startsWith(PREFIX)) {
+            api.sendMessage(`Command "${commandName}" does not require the prefix "${PREFIX}". Please use the command without the prefix.`, event.threadID, event.messageID);
             return;
         }
 
@@ -146,7 +152,7 @@ async function handleCommand(api, event) {
                 } else {
                     api.sendMessage("Hindi Ito Redroom na GC🙂.", event.threadID, event.messageID);
                 }
-                break; 
+                break;
             default:
                 api.sendMessage("Invalid role specified for the command.", event.threadID);
                 break;
@@ -263,8 +269,10 @@ login({ appState: appState }, (err, api) => {
                             const command = commands.get(commandName);
 
                             if (command) {
-                                if (command.octoPrefix && !event.body.startsWith(PREFIX)) {
+                                if (command.octoPrefix === true && !event.body.startsWith(PREFIX)) {
                                     api.sendMessage(`Command "${commandName}" requires the prefix "${PREFIX}". Please use the correct prefix.`, event.threadID, event.messageID);
+                                } else if (command.octoPrefix === false && event.body.startsWith(PREFIX)) {
+                                    api.sendMessage(`Command "${commandName}" does not require the prefix "${PREFIX}". Please use the command without the prefix.`, event.threadID, event.messageID);
                                 } else {
                                     handleCommand(api, event);
                                 }
