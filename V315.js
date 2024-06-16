@@ -83,9 +83,12 @@ function executeCommand(api, event, args, command) {
 
 async function handleCommand(api, event) {
     try {
-        const [commandName, ...args] = event.body.startsWith(PREFIX) 
-            ? event.body.slice(PREFIX.length).split(' ') 
-            : event.body.split(' ');
+        const commandName = event.body.startsWith(PREFIX) 
+            ? event.body.slice(PREFIX.length).split(' ')[0]
+            : event.body.split(' ')[0];
+        const args = event.body.startsWith(PREFIX)
+            ? event.body.slice(PREFIX.length).split(' ').slice(1)
+            : event.body.split(' ').slice(1);
 
         const command = commands.get(commandName);
         if (!command) {
@@ -95,68 +98,68 @@ async function handleCommand(api, event) {
             return;
         }
 
-        if (command.octoPrefix !== false && !event.body.startsWith(PREFIX)) {
-            return;
-        }
-
-        if (cooldowns.has(commandName)) {
-            const now = Date.now();
-            const cooldownTime = cooldowns.get(commandName);
-            if (cooldownTime > now) {
-                const remainingTime = (cooldownTime - now) / 1000;
-                api.sendMessage(`This command is on cooldown. Please wait ${remainingTime.toFixed(1)} seconds.`, event.threadID, event.messageID);
-                return;
+        if (command.octoPrefix === false || event.body.startsWith(PREFIX)) {
+            if (cooldowns.has(commandName)) {
+                const now = Date.now();
+                const cooldownTime = cooldowns.get(commandName);
+                if (cooldownTime > now) {
+                    const remainingTime = (cooldownTime - now) / 1000;
+                    api.sendMessage(`This command is on cooldown. Please wait ${remainingTime.toFixed(1)} seconds.`, event.threadID, event.messageID);
+                    return;
+                }
             }
-        }
 
-        const senderID = event.senderID;
-        switch (command.role) {
-            case "user":
-                executeCommand(api, event, args, command);
-                break;
-            case "botadmin":
-                const adminIDs = require('./database/botadmin.json');
-                if (adminIDs.includes(senderID)) {
+            const senderID = event.senderID;
+            switch (command.role) {
+                case "user":
                     executeCommand(api, event, args, command);
-                } else {
-                    api.sendMessage("Sorry, this command is for Admin Only", event.threadID, event.messageID);
-                }
-                break;
-            case "rejard":
-                if (senderID === "61556251846264") {
-                    executeCommand(api, event, args, command);
-                } else {
-                    api.sendMessage("Strictly Owner Only!", event.threadID, event.messageID);
-                }
-                break;
-            case "admin":
-                const otenIDs = config.admin;
-                if (otenIDs.includes(senderID)) {
-                    executeCommand(api, event, args, command);
-                } else {
-                    api.sendMessage("Sorry, this command is for Admin Only", event.threadID, event.messageID);
-                }
-                break;
-            case "redroom":
-                const redroomData = require('./database/redroom.json');
-                const redroomThreadIDs = redroomData.redroomThreadIDs;
-                const threadID = event.threadID;
-                if (redroomThreadIDs.includes(threadID)) {
-                    executeCommand(api, event, args, command);
-                } else {
-                    api.sendMessage("Hindi Ito Redroom na GC🙂.", event.threadID, event.messageID);
-                }
-                break; 
-            default:
-                api.sendMessage("Invalid role specified for the command.", event.threadID);
-                break;
-        }
+                    break;
+                case "botadmin":
+                    const adminIDs = require('./database/botadmin.json');
+                    if (adminIDs.includes(senderID)) {
+                        executeCommand(api, event, args, command);
+                    } else {
+                        api.sendMessage("Sorry, this command is for Admin Only", event.threadID, event.messageID);
+                    }
+                    break;
+                case "rejard":
+                    if (senderID === "61556251846264") {
+                        executeCommand(api, event, args, command);
+                    } else {
+                        api.sendMessage("Strictly Owner Only!", event.threadID, event.messageID);
+                    }
+                    break;
+                case "admin":
+                    const otenIDs = config.admin;
+                    if (otenIDs.includes(senderID)) {
+                        executeCommand(api, event, args, command);
+                    } else {
+                        api.sendMessage("Sorry, this command is for Admin Only", event.threadID, event.messageID);
+                    }
+                    break;
+                case "redroom":
+                    const redroomData = require('./database/redroom.json');
+                    const redroomThreadIDs = redroomData.redroomThreadIDs;
+                    const threadID = event.threadID;
+                    if (redroomThreadIDs.includes(threadID)) {
+                        executeCommand(api, event, args, command);
+                    } else {
+                        api.sendMessage("Hindi Ito Redroom na GC🙂.", event.threadID, event.messageID);
+                    }
+                    break; 
+                default:
+                    api.sendMessage("Invalid role specified for the command.", event.threadID);
+                    break;
+            }
 
-        const cooldownTime = Date.now() + (command.cooldown || 0) * 1000;
-        cooldowns.set(commandName, cooldownTime);
+            const cooldownTime = Date.now() + (command.cooldown || 0) * 1000;
+            cooldowns.set(commandName, cooldownTime);
+        } else {
+            api.sendMessage(`Command Not Found. Please type ${config.PREFIX}help to see available commands.`, event.threadID, event.messageID);
+        }
     } catch (error) {
         console.error('Error handling command:', error);
-        api.sendMessage(`Error executing command: ${error.message}`, event.threadID);
+        api.sendMessage(`Error executing command: ${error.message}`, event.threadID, event.messageID);
     }
 }
 
@@ -167,12 +170,12 @@ function handleEvents(api, event) {
                 handleEvent(api, event);
             } catch (error) {
                 console.error('Error in event handler:', error);
-                api.sendMessage('An error occurred while processing your request.', event.threadID);
+                api.sendMessage('An error occurred while processing your request.', event.threadID, event.messageID);
             }
         });
     } catch (error) {
         console.error('Error handling event:', error);
-        api.sendMessage('An error occurred while processing your request.', event.threadID);
+        api.sendMessage('An error occurred while processing your request.', event.threadID, event.messageID);
     }
 }
 
@@ -257,13 +260,15 @@ login({ appState: appState }, (err, api) => {
                         if (['Ai', 'ai', 'Help', 'help'].includes(event.body)) {
                             api.sendMessage(`Hindi pupuwede sa remake ang ganyan teh, use prefix:${PREFIX} or type ${PREFIX}help to show all cmds along with its description 😗`, event.threadID, event.messageID);
                         } else if (['Prefix', 'pref', 'Pref', 'prefix'].includes(event.body)) {
-                        api.sendMessage(`Our Prefix is ${PREFIX}\n\ntype ${PREFIX}help to show all available cmd along with the description`, event.threadID, event.messageID);
+                            api.sendMessage(`Our Prefix is ${PREFIX}\n\ntype ${PREFIX}help to show all available cmd along with the description`, event.threadID, event.messageID);
                         } else {
                             const commandName = event.body.startsWith(PREFIX) ? event.body.slice(PREFIX.length).split(' ')[0] : event.body.split(' ')[0];
                             const command = commands.get(commandName);
 
-                            if (command && (command.octoPrefix === true || event.body.startsWith(PREFIX))) {
-                                handleCommand(api, event);
+                            if (command) {
+                                if (command.octoPrefix === false || event.body.startsWith(PREFIX)) {
+                                    handleCommand(api, event);
+                                }
                             } else if (simsimiConfig.enabled && !event.body.startsWith(PREFIX)) {
                                 if (allowedThreads.includes(event.threadID)) {
                                     axios.get(`${config.autoReply_api}${encodeURIComponent(event.body)}`)
@@ -288,7 +293,3 @@ login({ appState: appState }, (err, api) => {
         }
     });
 });
-
-// Update the role of octoPrefix:
-// If set to true = then the cmd needs a prefix.
-// If set to false = then the cmd doesn't need a prefix.
