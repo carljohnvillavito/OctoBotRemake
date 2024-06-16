@@ -2,6 +2,7 @@ const axios = require('axios');
 
 module.exports = {
     description: "Talk to sim",
+    octoPrefix: false,
     role: "user",
     cooldown: 1,
     execute: async function(api, event, args, commands) {
