@@ -4,6 +4,7 @@ const path = require('path');
 module.exports = {
     description: "Modify the configuration settings",
     role: "admin",
+    octoPrefix: true,
     credits: "Rejard",
     async execute(api, event, args, commands) {
         const configPath = path.join(__dirname, '../config.json');
