@@ -14,14 +14,14 @@ module.exports = {
         }
         try {
             const res = await axios.get(`https://sim-api-ctqz.onrender.com/sim?query=${content}`);
-            if (res.error) {
+            if (res.data.error) {
                 api.sendMessage(`Error: ${res.data.error}`, tid, (error, info) => {
                     if (error) {
                         console.error(error);
                     }
                 }, mid);
             } else {
-                const response = res.respond;
+                const response = res.data.respond;
                 api.sendMessage(response, tid, (error, info) => {
                     if (error) {
                         console.error(error);
