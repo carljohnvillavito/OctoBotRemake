@@ -1,5 +1,6 @@
 module.exports = {
     description: "Change your bot bio",
+    octoPrefix: true,
     role: "botadmin",
     cooldown: 15,
     execute(api, event, args, commands) {
