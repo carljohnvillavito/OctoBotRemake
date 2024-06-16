@@ -8,6 +8,7 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 module.exports = {
     description: "Ask the GPT4o a question (realtime web search)",
     role: "user",
+    octoPrefix: true,
     cooldown: 8,
     execute: async function (api, event, args, commands) {
         if (args.length === 0) {
