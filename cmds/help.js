@@ -1,6 +1,7 @@
 module.exports = {
     description: "Show Commands and the descriptions",
     role: "user",
+    octoPrefix: true,
     credits: "rejardgwapo",
     cooldown: 16,		
     execute(api, event, args, commands) {
