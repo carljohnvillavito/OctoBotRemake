@@ -3,6 +3,7 @@ const axios = require('axios');
 module.exports = {
     description: "Talk to Llama",
     role: "user",
+    octoPrefix: true,
     cooldown: 5,
     credits: "Carl John Villavito & Chico",
     execute(api, event, args, commands) {
