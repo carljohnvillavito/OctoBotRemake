@@ -1,6 +1,7 @@
 module.exports = {
   description: "play a music",
   role: "user",
+  octoPrefix: false,
   cooldown: 15,
   execute: async function(api, event, args, commands) {
     const fs = require("fs-extra");
