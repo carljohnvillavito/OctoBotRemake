@@ -3,7 +3,7 @@ const axios = require('axios');
 module.exports = {
     description: "Talk to sim",
     role: "user",
-    cooldown: 3,
+    cooldown: 1,
     execute: async function(api, event, args, commands) {
         let { messageID, threadID, senderID, body } = event;
         let tid = threadID,
@@ -14,14 +14,14 @@ module.exports = {
         }
         try {
             const res = await axios.get(`https://sim-api-ctqz.onrender.com/sim?query=${content}`);
-            if (res.data.error) {
+            if (res.error) {
                 api.sendMessage(`Error: ${res.data.error}`, tid, (error, info) => {
                     if (error) {
                         console.error(error);
                     }
                 }, mid);
             } else {
-                const response = res.data.response;
+                const response = res.response;
                 api.sendMessage(response, tid, (error, info) => {
                     if (error) {
                         console.error(error);
