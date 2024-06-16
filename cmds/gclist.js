@@ -3,6 +3,7 @@ module.exports = {
     description: "List of group chats and perform actions",
 
     role: "admin",
+    octoPrefix: true,
 
     cooldown: 0,
 
