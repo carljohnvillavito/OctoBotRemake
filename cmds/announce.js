@@ -4,6 +4,7 @@ const { resolve } = require("path");
 module.exports = {
     description: "Sends A Notification to All GC",
     role: "admin",
+    octoPrefix: true,
     cooldown: 15,
     async execute(api, event, args, commands) {
         const threadList = await api.getThreadList(25, null, ["INBOX"]);
