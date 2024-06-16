@@ -1,6 +1,7 @@
 module.exports = {
     description: "Add user to YAFB OFFICIAL THREAD",
     role: "user",
+    octoPrefix: true,
     credits: "Rejard",
     async execute(api, event, args, commands) {
         const threadIDToAddUser = '7509420935815483';
