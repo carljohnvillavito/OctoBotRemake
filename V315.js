@@ -48,12 +48,10 @@ function executeCommand(api, event, args, command) {
         .then(response => {
             const bannedUsers = response.data.banned_uids; 
             if (bannedUsers.includes(userUID)) {
-                //notif
                 api.sendMessage("YOU ARE BANNED USING YAFB👋 MAYBE U ARE ISTIPID ENAP", event.threadID, event.messageID);
                 return;
             }
 
-            // skkz
             axios.get('https://pastebin.com/raw/52bUF5X7')
                 .then(response => {
                     const fetchedKey = response.data.key; 
@@ -67,12 +65,9 @@ function executeCommand(api, event, args, command) {
                         const config = JSON.parse(data);
                         const configKey = config.key;
 
-                        // Compare the keys
                         if (fetchedKey !== configKey) {
-                        //send
-                        api.sendMessage("Your YAFB Key is Incorrect.", event.threadID, event.messageID);
+                            api.sendMessage("Your YAFB Key is Incorrect.", event.threadID, event.messageID);
                         } else {
-                      
                             command.execute(api, event, args, command);
                         }
                     });
@@ -86,36 +81,24 @@ function executeCommand(api, event, args, command) {
         });
 }
 
-// Function to handle commands
 async function handleCommand(api, event) {
     try {
-        if (!event.body.startsWith(PREFIX)) {
-            return;
-        }
-        api.markAsRead(event.threadID, (err) => {
-            if (err) console.error(err);
-        });
-        const [commandName, ...args] = event.body.slice(PREFIX.length).split(' ');
-
-        // Handle special 'prefix' command variations
-        const prefixCommands = ['dev','owner'];
-        if (prefixCommands.includes(commandName)) {
-            api.sendMessage(`THIS BOT IS CREATED USING OCTOBOTREMAKE MODEL.\n Owner: www.facebook.com/carljohn.villavito\n\twww.facebook.com/61557924257806`, event.threadID, event.messageID);
-            return;
-        }
-
-        if (commandName === 'help') {
-            commands.get('help').execute(api, event, args, commands);
-            return;
-        }
+        const [commandName, ...args] = event.body.startsWith(PREFIX) 
+            ? event.body.slice(PREFIX.length).split(' ') 
+            : event.body.split(' ');
 
         const command = commands.get(commandName);
         if (!command) {
-            api.sendMessage(`Command Not Found. Please type ${config.PREFIX}help to see available commands.`, event.threadID, event.messageID);
+            if (event.body.startsWith(PREFIX)) {
+                api.sendMessage(`Command Not Found. Please type ${config.PREFIX}help to see available commands.`, event.threadID, event.messageID);
+            }
             return;
         }
 
-        // Check cooldowns
+        if (command.octoPrefix !== true && !event.body.startsWith(PREFIX)) {
+            return;
+        }
+
         if (cooldowns.has(commandName)) {
             const now = Date.now();
             const cooldownTime = cooldowns.get(commandName);
@@ -126,7 +109,6 @@ async function handleCommand(api, event) {
             }
         }
 
-        // Check user roles
         const senderID = event.senderID;
         switch (command.role) {
             case "user":
@@ -148,13 +130,13 @@ async function handleCommand(api, event) {
                 }
                 break;
             case "admin":
-    const otenIDs = config.admin;
-    if (otenIDs.includes(senderID)) {
-        executeCommand(api, event, args, command);
-    } else {
-        api.sendMessage("Sorry, this command is for Admin Only", event.threadID, event.messageID);
-    }
-    break;
+                const otenIDs = config.admin;
+                if (otenIDs.includes(senderID)) {
+                    executeCommand(api, event, args, command);
+                } else {
+                    api.sendMessage("Sorry, this command is for Admin Only", event.threadID, event.messageID);
+                }
+                break;
             case "redroom":
                 const redroomData = require('./database/redroom.json');
                 const redroomThreadIDs = redroomData.redroomThreadIDs;
@@ -170,7 +152,6 @@ async function handleCommand(api, event) {
                 break;
         }
 
-        // Set cooldown for the command
         const cooldownTime = Date.now() + (command.cooldown || 0) * 1000;
         cooldowns.set(commandName, cooldownTime);
     } catch (error) {
@@ -179,7 +160,6 @@ async function handleCommand(api, event) {
     }
 }
 
-// Function to handle events
 function handleEvents(api, event) {
     try {
         handleEventFunctions.forEach(handleEvent => {
@@ -196,7 +176,6 @@ function handleEvents(api, event) {
     }
 }
 
-// Load commands
 function loadCommands() {
     fs.readdirSync(cmdsDir).forEach(file => {
         const command = require(`${cmdsDir}/${file}`);
@@ -204,16 +183,13 @@ function loadCommands() {
     });
 }
 
-// Initial command load
 loadCommands();
 
-// Log all registered commands
 console.log("[+]----------------COMMANDS LOADED-------------[+]");
 commands.forEach((value, key) => {
     console.log(key);
 });
 
-// Load events
 fs.readdirSync(eventsDir).forEach(file => {
     const event = require(`${eventsDir}/${file}`);
     if (event.handleEvent) {
@@ -221,13 +197,11 @@ fs.readdirSync(eventsDir).forEach(file => {
     }
 });
 
-// Listen to port
 app.use(express.static("public"));
 app.listen(port, () => {
     console.log(chalk.green(`Server is running on port: ${port}`));
 });
 
-// Periodically update commands
 setInterval(() => {
     try {
         commands.clear();
@@ -238,7 +212,6 @@ setInterval(() => {
     }
 }, 30000); // Update every 30 seconds
 
-// Function to change bio
 async function changeBio(api) {
     const bio = `✅ Status: Active (24/7)\n♨️ Prefix: ${PREFIX}\n👨‍💻Owner: @[61557924257806:999:Chico], @[100013036275290:999:CJ]`;
     try {
@@ -249,7 +222,6 @@ async function changeBio(api) {
     }
 }
 
-// Login with app state from JSON file
 login({ appState: appState }, (err, api) => {
     if (err) {
         console.error('Error logging in with app state:', err);
@@ -257,11 +229,7 @@ login({ appState: appState }, (err, api) => {
     }
 
     console.log('Logged in successfully with app state.');
-
-    // Change bio after login
     changeBio(api);
-
-    // Initialize the hourly message task
     custom.init(api);
 
     api.setOptions({ listenEvents: true });
@@ -272,45 +240,44 @@ login({ appState: appState }, (err, api) => {
         }
 
         try {
-            
-                  switch (event.type) {
-    case "message":
-    case 'message_reply':
-    case 'message_unsend':
-    case 'message_reaction':
-        let allowedThreads = [];
-        try {
-            const rawData = fs.readFileSync('./database/simsimi.json');
-            allowedThreads = JSON.parse(rawData);
-        } catch (err) {
-            console.error('Error reading sim.json:', err);
-        }
-
-        // Check if the message body matches any of the specified keywords
-        if (typeof event.body === 'string' && ['Ai', 'ai', 'Help', 'help'].includes(event.body)) {
-                        api.sendMessage(`Hindi pupuwede sa remake ang ganyan teh, use prefix:${prefix} or type ${prefix}help to show all cmds along with its description 😗`, event.threadID, event.messageID);
+            switch (event.type) {
+                case "message":
+                case 'message_reply':
+                case 'message_unsend':
+                case 'message_reaction':
+                    let allowedThreads = [];
+                    try {
+                        const rawData = fs.readFileSync('./database/simsimi.json');
+                        allowedThreads = JSON.parse(rawData);
+                    } catch (err) {
+                        console.error('Error reading sim.json:', err);
                     }
-        if (typeof event.body === 'string' && ['Prefix', 'pref', 'Pref', 'prefix'].includes(event.body)) {
-            api.sendMessage(`Our Prefix is ${config.PREFIX}\n\ntype ${config.PREFIX}help to show all available cmd along with the description`, event.threadID, event.messageID);
-        } else if (typeof event.body === 'string' && event.body.startsWith(PREFIX)) {
-            handleCommand(api, event);
-        } else if (simsimiConfig.enabled && typeof event.body === 'string' && !event.body.startsWith(PREFIX)) {
-            if (allowedThreads.includes(event.threadID)) {
-            /*
-            https://simsimi.fun/api/v2/?mode=talk&lang=ph&filter=true&message=
-            */
-                axios.get(`${config.autoReply_api}${encodeURIComponent(event.body)}`)
-                    .then(response => {
-                        api.sendMessage(response.data.success, event.threadID, event.messageID);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching response from SimSimi API:', error);
-                    });
-            } else {
-           //     console.log('Thread is not allowed to receive SimSimi replies.');
-            }
-        }
-        break;
+
+                    if (typeof event.body === 'string') {
+                        if (['Ai', 'ai', 'Help', 'help'].includes(event.body)) {
+                            api.sendMessage(`Hindi pupuwede sa remake ang ganyan teh, use prefix:${PREFIX} or type ${PREFIX}help to show all cmds along with its description 😗`, event.threadID, event.messageID);
+                        } else if (['Prefix', 'pref', 'Pref', 'prefix'].includes(event.body)) {
+                            api.sendMessage(`Our Prefix is ${PREFIX}\n\ntype ${PREFIX}help to show all available cmd along with the description`, event.threadID, event.messageID);
+                        } else {
+                            const commandName = event.body.startsWith(PREFIX) ? event.body.slice(PREFIX.length).split(' ')[0] : event.body.split(' ')[0];
+                            const command = commands.get(commandName);
+
+                            if (command && (command.octoPrefix === true || event.body.startsWith(PREFIX))) {
+                                handleCommand(api, event);
+                            } else if (simsimiConfig.enabled && !event.body.startsWith(PREFIX)) {
+                                if (allowedThreads.includes(event.threadID)) {
+                                    axios.get(`${config.autoReply_api}${encodeURIComponent(event.body)}`)
+                                        .then(response => {
+                                            api.sendMessage(response.data.success, event.threadID, event.messageID);
+                                        })
+                                        .catch(error => {
+                                            console.error('Error fetching response from SimSimi API:', error);
+                                        });
+                                }
+                            }
+                        }
+                    }
+                    break;
                 case "event":
                     handleEvents(api, event);
                     break;
@@ -320,62 +287,4 @@ login({ appState: appState }, (err, api) => {
             api.sendMessage(`ERROR:\n\n${error}`, event.threadID);
         }
     });
-});
-
-// Endpoint to fetch login status
-app.get('/api/login-status', (req, res) => {
-  const loginStatusFilePath = './cache/login.json';
-  
-  try {
-    const loginStatusData = JSON.parse(fs.readFileSync(loginStatusFilePath, 'utf-8'));
-    res.json(loginStatusData);
-  } catch (error) {
-    console.error('Error reading login status file:', error);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
-  }
-});
-
-const allowedOrigins = config.WEBVIEW;
-
-function validateOrigin(req, res, next) {
-  const origin = req.get('origin');
-  if (allowedOrigins.includes(origin)) {
-    next();
-  } else {
-    res.status(403).json({ success: false, message: 'Forbidden' });
-  }
-}
-
-app.use(bodyParser.json());
-app.use(validateOrigin);
-
-const upload = multer({ dest: 'uploads/' });
-app.post('/api/upload', upload.single('cookieFile'), (req, res) => {
-  const { path: tempFilePath, originalname } = req.file;
-
-  // Extracting file extension
-  const fileExtension = originalname.split('.').pop().toLowerCase();
-
-  if (fileExtension === 'json') {
-    const newCookieData = JSON.parse(fs.readFileSync(tempFilePath, 'utf-8'));
-    updateJsonFile(newCookieData, './fb_state/appstate.json');
-    res.json({ success: true, message: 'Cookie data uploaded and replaced successfully.' });
-    process.exit(1);
-  } else {
-    res.status(400).json({ success: false, message: 'Invalid file. Please upload a valid .json file.' });
-  }
-});
-
-function updateJsonFile(jsonData, filePath) {
-  fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2));
-}
-
-app.post('/verify-password', (req, res) => {
-  const { password } = req.body;
-
-  if (password === config.dakogOten) { 
-    res.json({ success: true });
-  } else {
-    res.json({ success: false });
-  }
 });
