@@ -9,6 +9,7 @@ module.exports = {
   description: "Text to Image",
   role: "user", // or admin botadmin
   cooldown: 5,
+  octoPrefix: true,
   execute: async function(api, event, args, commands) {
     const text = args.join(" ");
     if (!text) {
