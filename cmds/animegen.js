@@ -5,6 +5,7 @@ module.exports = {
     description: "Random Anime Image",
     role: "user",
     cooldown: 18,
+    octoPrefix: true,
     credits: "Neku",
     execute(api, event, args, commands) {
       /*  if (args.length === 0) {
