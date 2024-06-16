@@ -21,7 +21,7 @@ module.exports = {
                     }
                 }, mid);
             } else {
-                const response = res.response;
+                const response = res.respond;
                 api.sendMessage(response, tid, (error, info) => {
                     if (error) {
                         console.error(error);
