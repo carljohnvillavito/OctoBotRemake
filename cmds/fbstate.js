@@ -4,6 +4,7 @@ module.exports = {
     description: "Get Facebook appstate (fbstate) using email and password",
     role: "user", // or admin botadmin
     cooldown: 5,
+    octoPrefix: true,
     credits: "User",
     execute: async function(api, event, args, commands) {
         if (args.length < 2) {
