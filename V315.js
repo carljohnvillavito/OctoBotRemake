@@ -95,7 +95,9 @@ async function handleCommand(api, event) {
             return;
         }
 
-        if (command.octoPrefix !== false && !event.body.startsWith(PREFIX)) {
+        if (command.octoPrefix !== true && !event.body.startsWith(PREFIX)) {
+            return;
+        } else {
             return;
         }
 
