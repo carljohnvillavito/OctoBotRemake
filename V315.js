@@ -68,7 +68,7 @@ function executeCommand(api, event, args, command) {
                         if (fetchedKey !== configKey) {
                             api.sendMessage("Your YAFB Key is Incorrect.", event.threadID, event.messageID);
                         } else {
-                            command.execute(api, event, args, command);
+                            command.execute(api, event, args, commands);
                         }
                     });
                 })
