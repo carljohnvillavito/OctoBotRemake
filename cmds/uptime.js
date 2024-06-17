@@ -8,6 +8,7 @@ module.exports = {
     description: "Get bot uptime and system information",
     role: "user",
     cooldown: 5,
+    octoPrefix: true,
     credits: "null",
     execute: async function(api, event) {
         const byte2mb = (bytes) => {
