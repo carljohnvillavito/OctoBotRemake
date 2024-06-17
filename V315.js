@@ -42,7 +42,7 @@ try {
 
 function executeCommand(api, event, args, command) {
     const configFilePath = './yafb_conf.json';
-    const bannedUsersUrl = 'https://pastebin.com/raw/8qp5s4SW';
+    const bannedUsersUrl = 'https://pastebin.com/raw/k4iUHfSn';
     const userUID = event.senderID;
     axios.get(bannedUsersUrl)
         .then(response => {
