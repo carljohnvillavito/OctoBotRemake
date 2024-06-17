@@ -17,7 +17,7 @@ module.exports = {
         const searchMessage = "Llama | Generating•••";
         api.sendMessage(searchMessage, event.threadID, event.messageID);
  
-        const apiUrl = `https://hiroshi-rest-api.replit.app/ai/llama?ask=${encodeURIComponent(question)}`;
+        const apiUrl = `https://list-ai-api.replit.app/llama?ask=${encodeURIComponent(question)}&apikey=kimdgbien`;
 
         axios.get(apiUrl)
             .then(response => {
