@@ -4,6 +4,7 @@ module.exports = {
     description: "Generate a raw Pastebin link containing the user inputs",
     role: "user", // or admin botadmin
     cooldown: 9,
+    octoPrefix: true,
     credits: "CJ & Chico",
     execute: function(api, event, args, commands) {
         const text = args.join(" ");
