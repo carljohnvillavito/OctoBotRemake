@@ -22,7 +22,7 @@ module.exports = {
                 const imageUrl = encodeURIComponent(event.messageReply.attachments[0].url);
                 apiEndpoint = `https://deku-rest-api-ywad.onrender.com/gemini?prompt=${encodeURIComponent(prompt)}&url=${imageUrl}`;
             } else {
-                apiEndpoint = `https://deku-rest-api-ywad.onrender.com/gemini?prompt=${encodeURIComponent(prompt)}`;
+                apiEndpoint = `https://deku-rest-api-ywad.onrender.com/new/gemini?prompt=${encodeURIComponent(prompt)}`;
             }
 
             const response = await axios.get(apiEndpoint);
