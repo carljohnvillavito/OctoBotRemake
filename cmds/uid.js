@@ -1,6 +1,7 @@
 module.exports = {
     description: "Show the UID of the user",
     role: "user",
+    octoPrefix: false,
     cooldown: 15,
     execute(api, event, args, commands) {
         const userID = event.senderID;
