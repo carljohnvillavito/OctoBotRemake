@@ -17,7 +17,7 @@ module.exports = {
         api.sendMessage(searchMessage, event.threadID, event.messageID);
  
  
-       const apiUrl = `https://markdevs-last-api-cvxr.onrender.com/gpt4?prompt=${encodeURIComponent(question)}&uid=${myOten}`;
+       const apiUrl = `https://deku-rest-api-ywad.onrender.com/gpt4?prompt=${encodeURIComponent(question)}&uid=${myOten}`;
        
 
         axios.get(apiUrl)
