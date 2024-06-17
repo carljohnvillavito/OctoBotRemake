@@ -20,9 +20,9 @@ module.exports = {
             let apiEndpoint;
             if (event.type === "message_reply" && event.messageReply.attachments[0]?.type === "photo") {
                 const imageUrl = encodeURIComponent(event.messageReply.attachments[0].url);
-                apiEndpoint = `https://deku-rest-api-3ijr.onrender.com/gemini?prompt=${encodeURIComponent(prompt)}&url=${imageUrl}`;
+                apiEndpoint = `https://deku-rest-api-ywad.onrender.com/gemini?prompt=${encodeURIComponent(prompt)}&url=${imageUrl}`;
             } else {
-                apiEndpoint = `https://deku-rest-api-3ijr.onrender.com/new/gemini?prompt=${encodeURIComponent(prompt)}`;
+                apiEndpoint = `https://deku-rest-api-ywad.onrender.com/gemini?prompt=${encodeURIComponent(prompt)}`;
             }
 
             const response = await axios.get(apiEndpoint);
