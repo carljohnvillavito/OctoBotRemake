@@ -1,5 +1,6 @@
 module.exports = {
     description: "Restart the server",
+    octoPrefix: true,
     role: "admin",
     cooldown: 5,
     execute(api, event, args, commands) {
