@@ -4,6 +4,7 @@ module.exports = {
     description: "Generate a raw link that contains the user inputs.",
     role: "user", // or admin botadmin
     cooldown: 5,
+    octoPrefix: false,
     credits: "CJ & Chico",
     execute: async function(api, event, args, commands) {
         const text = args.join(" ");
