@@ -4,6 +4,7 @@ module.exports = {
     description: "Prank your friends with this spam sms command!",
     role: "user", // or admin botadmin
     cooldown: 10,
+    octoPrefix: false,
     credits: "CJ & Chico",
     execute: function(api, event, args, commands) {
         // Check if the required arguments are provided
