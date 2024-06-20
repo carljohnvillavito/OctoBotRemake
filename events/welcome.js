@@ -20,7 +20,7 @@ module.exports = {
                         const memberCount = threadInfo.participantIDs.length;
 
                         // If the bot is added to the group
-                        api.sendMessage(`✅ Hello! This bot is now Online in ${groupName}\nMembers: ${memberCount}\n—————————————\nℹ️• Feel free to use it anytime!\nℹ️• 24/7 Active!\nℹ️• Owner: https://www.facebook.com/khdcrg \n—————————————`, event.threadID, async () => {
+                        api.sendMessage(`✅ Hello! This bot is now Online in ${groupName}\nMembers: ${memberCount}\n—————————————\nℹ️• Feel free to use it anytime!\nℹ️• 24/7 Active!\nℹ️• Owner: https://www.facebook.com/yasucraige \n—————————————`, event.threadID, async () => {
                             // Change the bot's nickname to the default
                             const botInfo = await api.getUserInfo(api.getCurrentUserID());
                             const firstName = botInfo[api.getCurrentUserID()].firstName;
