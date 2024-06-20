@@ -219,7 +219,7 @@ setInterval(() => {
 }, 30000); // Update every 30 seconds
 
 async function changeBio(api) {
-    const bio = `💭 bot name: bot ni yasu\n📣 prefix: "${PREFIX}"\n owner: @[100046067063313:999:my handsome owner]`;
+    const bio = `💭Bot name: bot ni yasu\n📣Prefix: "${PREFIX}"\n Owner: @[100046067063313:999:my handsome owner]`;
     try {
         await api.changeBio(bio);
         console.log(chalk.blue('[ SYSTEM ] ') + 'Bio updated successfully.');
