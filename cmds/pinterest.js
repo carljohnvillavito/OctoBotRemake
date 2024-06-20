@@ -3,7 +3,7 @@ const fs = require('fs');
 
 async function getPinterest(img) {
   try {
-    const response = await axios.get(`https://hiroshi-rest-api.replit.app/search/pinterest?search=${encodeURIComponent(img)}`);
+    const response = await axios.get(`https://random-api-pcoe.onrender.com/api/pinterest?search=${encodeURIComponent(img)}`);
     if (response.data && response.data.data) {
       return response.data.data;
     } else {
