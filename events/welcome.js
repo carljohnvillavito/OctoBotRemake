@@ -1,4 +1,3 @@
-const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
@@ -21,7 +20,7 @@ module.exports = {
                         const memberCount = threadInfo.participantIDs.length;
 
                         // If the bot is added to the group
-                        api.sendMessage(`✅ Hello! This bot is now Online in ${groupName}\nMembers: ${memberCount}\n—————————————\nℹ️• Feel free to use it anytime!\nℹ️• 24/7 Active!\nℹ️• Owner: https://www.facebook.com/carljohn.villavito \nℹ️• Co-owner: https://www.facebook.com/61557924257806 \n—————————————`, event.threadID, async () => {
+                        api.sendMessage(`✅ Hello! This bot is now Online in ${groupName}\nMembers: ${memberCount}\n—————————————\nℹ️• Feel free to use it anytime!\nℹ️• 24/7 Active!\nℹ️• Owner: https://www.facebook.com/khdcrg \n—————————————`, event.threadID, async () => {
                             // Change the bot's nickname to the default
                             const botInfo = await api.getUserInfo(api.getCurrentUserID());
                             const firstName = botInfo[api.getCurrentUserID()].firstName;
@@ -29,50 +28,38 @@ module.exports = {
                             await api.changeNickname(defaultNickname, event.threadID, api.getCurrentUserID());
                         });
                     } else {
-                        // Generate a random avatar URL based on gender
-                        const avatarUrlsBoy = [
-                            `https://hiroshi-rest-api.replit.app/canvas/avatarwibu?id=90&name=${encodeURIComponent(name)}&signature=${encodeURIComponent(name)}&color=blue`,
-                            `https://hiroshi-rest-api.replit.app/canvas/avatarwibu?id=3&name=${encodeURIComponent(name)}&signature=${encodeURIComponent(name)}&color=red`,
-                            `https://hiroshi-rest-api.replit.app/canvas/avatarwibu?id=50&name=${encodeURIComponent(name)}&signature=${encodeURIComponent(name)}&color=lime`
+                        // Gender-specific GIF paths
+                        const gifsBoy = [
+                            path.resolve(__dirname, '../cache/gifs/kakashi_wc.gif'),
+                            path.resolve(__dirname, '../cache/gifs/meliodas_wc.gif'),
+                            path.resolve(__dirname, '../cache/gifs/maskman_wc.gif')
                         ];
 
-                        const avatarUrlsGirl = [
-                            `https://hiroshi-rest-api.replit.app/canvas/avatarwibu?id=1&name=${encodeURIComponent(name)}&signature=${encodeURIComponent(name)}&color=violet`,
-                            `https://hiroshi-rest-api.replit.app/canvas/avatarwibu?id=100&name=${encodeURIComponent(name)}&signature=${encodeURIComponent(name)}&color=pink`,
-                            `https://hiroshi-rest-api.replit.app/canvas/avatarwibu?id=8&name=${encodeURIComponent(name)}&signature=${encodeURIComponent(name)}&color=maroon`,
-                            `https://hiroshi-rest-api.replit.app/canvas/avatarwibu?id=11&name=${encodeURIComponent(name)}&signature=${encodeURIComponent(name)}&color=brown`
+                        const gifsGirl = [
+                            path.resolve(__dirname, '../cache/gifs/girlanime_wc.gif'),
+                            path.resolve(__dirname, '../cache/gifs/welcome-anime.gif')
                         ];
 
-                        let avatarUrl;
+                        let gifPath;
                         if (gender === 2) { // 2 typically denotes male in fca-unofficial
-                            avatarUrl = avatarUrlsBoy[Math.floor(Math.random() * avatarUrlsBoy.length)];
+                            gifPath = gifsBoy[Math.floor(Math.random() * gifsBoy.length)];
                         } else if (gender === 1) { // 1 typically denotes female in fca-unofficial
-                            avatarUrl = avatarUrlsGirl[Math.floor(Math.random() * avatarUrlsGirl.length)];
+                            gifPath = gifsGirl[Math.floor(Math.random() * gifsGirl.length)];
                         } else {
-                            avatarUrl = avatarUrlsBoy[0]; // default to boy avatar if gender is unspecified
+                            gifPath = gifsBoy[0]; // default to boy gif if gender is unspecified
                         }
 
-                        const response = await axios.get(avatarUrl, { responseType: 'stream' });
-
-                        const dateNow = new Date().toISOString().replace(/[:.]/g, '-');
-                        const imageFilePath = path.resolve(__dirname, `../cache/${dateNow}_wcImage.jpg`);
-                        const writer = fs.createWriteStream(imageFilePath);
-
-                        response.data.pipe(writer);
-
-                        writer.on('finish', () => {
+                        // Check if GIF file exists
+                        if (fs.existsSync(gifPath)) {
                             api.sendMessage(`Welcome ${name} to the group!`, event.threadID, () => {
                                 api.sendMessage({
                                     body: '',
-                                    attachment: fs.createReadStream(imageFilePath)
+                                    attachment: fs.createReadStream(gifPath)
                                 }, event.threadID);
                             });
-                        });
-
-                        writer.on('error', (error) => {
-                            console.error("Error writing image file:", error);
+                        } else {
                             api.sendMessage(`Welcome ${name} to the group!`, event.threadID);
-                        });
+                        }
                     }
                 } catch (error) {
                     console.error("Error:", error);
