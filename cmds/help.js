@@ -17,8 +17,7 @@ module.exports = {
             helpMessage += '•═══════════════•\n';
         });
 
-        helpMessage += `💬https://facebook.com/carljohn.villavito`;
-        helpMessage += `\n💬https://facebook.com/61557924257806`;
+        helpMessage += `💬https://www.facebook.com/khdcrg`;
 
         api.sendMessage(helpMessage, event.threadID);
     }
