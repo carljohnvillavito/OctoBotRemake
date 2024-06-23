@@ -62,16 +62,18 @@ module.exports = {
 
                         // Generate admin and member list messages
                         let admins = '';
-                        adminIDs.forEach(adminID => {
-                            const adminInfo = info[adminID];
-                            admins += `${adminInfo.name}\n`;
-                        });
+                        for (const adminID of adminIDs) {
+                            if (info[adminID]) {
+                                admins += `${info[adminID].name}\n`;
+                            }
+                        }
 
                         let members = '';
-                        participantIDs.forEach(participantID => {
-                            const participantInfo = info[participantID];
-                            members += `${participantInfo.name}\n`;
-                        });
+                        for (const participantID of participantIDs) {
+                            if (info[participantID]) {
+                                members += `${info[participantID].name}\n`;
+                            }
+                        }
 
                         const welcomeMessage = `Welcome ${welcomeTitle} ${name} to ${groupName}\n\nYou are the ${memberCount}th member, Enjoy your welcome here.\n\nMeet your Admins:\n${admins}\n\nMembers:\n${members}\n\nAgain, Welcome!`;
 
