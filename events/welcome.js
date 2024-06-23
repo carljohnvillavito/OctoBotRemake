@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const { writeFileSync } = require("fs-extra");
 
 // Load configuration
@@ -7,10 +9,17 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 module.exports = {
     async handleEvent(api, event) {
         if (event.logMessageData?.addedParticipants) {
-            event.logMessageData.addedParticipants.forEach(async (participant) => {
+            for (const participant of event.logMessageData.addedParticipants) {
                 try {
-                    const info = await api.getUserInfo(participant.userFbId);
-                    const { name, gender } = info[participant.userFbId];
+                    const userInfo = await api.getUserInfo(participant.userFbId);
+                    const user = userInfo[participant.userFbId];
+
+                    if (!user) {
+                        console.error(`User information for ID ${participant.userFbId} not found.`);
+                        continue;
+                    }
+
+                    const { name, gender } = user;
 
                     if (participant.userFbId === api.getCurrentUserID()) {
                         // Get group info
@@ -19,13 +28,20 @@ module.exports = {
                         const memberCount = threadInfo.participantIDs.length;
 
                         // If the bot is added to the group
-                        api.sendMessage(`✅ Hello! This bot is now Online in ${groupName}\nMembers: ${memberCount}\n—————————————\nℹ️• Feel free to use it anytime!\nℹ️• 24/7 Active!\nℹ️• Owner: https://www.facebook.com/yasucraige \n—————————————`, event.threadID, async () => {
-                            // Change the bot's nickname to the default
-                            const botInfo = await api.getUserInfo(api.getCurrentUserID());
-                            const firstName = botInfo[api.getCurrentUserID()].firstName;
-                            const defaultNickname = `${config.PREFIX} - ${firstName}-sama`;
-                            await api.changeNickname(defaultNickname, event.threadID, api.getCurrentUserID());
-                        });
+                        await api.sendMessage(
+                            `✅ Hello! This bot is now Online in ${groupName}\nMembers: ${memberCount}\n—————————————\nℹ️• Feel free to use it anytime!\nℹ️• 24/7 Active!\nℹ️• Owner: https://www.facebook.com/yasucraige \n—————————————`,
+                            event.threadID,
+                            async () => {
+                                // Change the bot's nickname to the default
+                                const botInfo = await api.getUserInfo(api.getCurrentUserID());
+                                const bot = botInfo[api.getCurrentUserID()];
+                                if (bot) {
+                                    const firstName = bot.firstName;
+                                    const defaultNickname = `${config.PREFIX} - ${firstName}-sama`;
+                                    await api.changeNickname(defaultNickname, event.threadID, api.getCurrentUserID());
+                                }
+                            }
+                        );
                     } else {
                         // Gender-specific GIF paths
                         const gifsBoy = [
@@ -70,10 +86,10 @@ module.exports = {
                         const welcomeMessage = `Welcome ${welcomeTitle} ${name} to ${groupName}\n\nYou are the ${memberCount}th member, Enjoy your welcome here.\n\nMeet your Admins:\n${admins}\n\nAgain, Welcome!`;
 
                         // Send welcome message
-                        api.sendMessage(welcomeMessage, event.threadID, () => {
+                        await api.sendMessage(welcomeMessage, event.threadID, async () => {
                             // Send welcome GIF
                             if (fs.existsSync(gifPath)) {
-                                api.sendMessage({
+                                await api.sendMessage({
                                     body: '',
                                     attachment: fs.createReadStream(gifPath)
                                 }, event.threadID);
@@ -82,13 +98,13 @@ module.exports = {
                             // Change new member's nickname
                             const firstName = name.split(' ')[0];
                             const nickname = `${firstName} — member`;
-                            api.changeNickname(nickname, event.threadID, participant.userFbId);
+                            await api.changeNickname(nickname, event.threadID, participant.userFbId);
                         });
                     }
                 } catch (error) {
                     console.error("Error:", error);
                 }
-            });
+            }
         }
     }
 };
