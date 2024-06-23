@@ -72,18 +72,8 @@ module.exports = {
                         const threadInfo = await api.getThreadInfo(event.threadID);
                         const groupName = threadInfo.threadName;
                         const memberCount = threadInfo.participantIDs.length;
-                        const adminIDs = threadInfo.adminIDs;
 
-                        // Fetch admin info
-                        const adminInfo = await api.getUserInfo(adminIDs);
-                        let admins = '';
-                        adminIDs.forEach(adminID => {
-                            if (adminInfo[adminID]) {
-                                admins += `- ${adminInfo[adminID].name}\n`;
-                            }
-                        });
-
-                        const welcomeMessage = `Welcome ${welcomeTitle} ${name} to ${groupName}\n\nYou are the ${memberCount}th member, Enjoy your welcome here.\n\nMeet your Admins:\n${admins}\n\nAgain, Welcome!`;
+                        const welcomeMessage = `Welcome ${welcomeTitle} ${name} to ${groupName}\n\nYou are the ${memberCount}th member, Enjoy your welcome here.\n\nAgain, Welcome!`;
 
                         // Send welcome message
                         await api.sendMessage(welcomeMessage, event.threadID, async () => {
