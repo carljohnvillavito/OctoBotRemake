@@ -41,25 +41,55 @@ module.exports = {
                         ];
 
                         let gifPath;
+                        let welcomeTitle;
                         if (gender === 2) { // 2 typically denotes male in fca-unofficial
                             gifPath = gifsBoy[Math.floor(Math.random() * gifsBoy.length)];
+                            welcomeTitle = "Mr.";
                         } else if (gender === 1) { // 1 typically denotes female in fca-unofficial
                             gifPath = gifsGirl[Math.floor(Math.random() * gifsGirl.length)];
+                            welcomeTitle = "M'lady";
                         } else {
                             gifPath = gifsBoy[0]; // default to boy gif if gender is unspecified
+                            welcomeTitle = "Mr.";
                         }
 
-                        // Check if GIF file exists
-                        if (fs.existsSync(gifPath)) {
-                            api.sendMessage(`Welcome ${name} to the group!`, event.threadID, () => {
+                        // Get group info
+                        const threadInfo = await api.getThreadInfo(event.threadID);
+                        const groupName = threadInfo.threadName;
+                        const memberCount = threadInfo.participantIDs.length;
+                        const adminIDs = threadInfo.adminIDs;
+                        const participantIDs = threadInfo.participantIDs;
+
+                        // Generate admin and member list messages
+                        let admins = '';
+                        adminIDs.forEach(adminID => {
+                            const adminInfo = info[adminID];
+                            admins += `${adminInfo.name}\n`;
+                        });
+
+                        let members = '';
+                        participantIDs.forEach(participantID => {
+                            const participantInfo = info[participantID];
+                            members += `${participantInfo.name}\n`;
+                        });
+
+                        const welcomeMessage = `Welcome ${welcomeTitle} ${name} to ${groupName}\n\nYou are the ${memberCount}th member, Enjoy your welcome here.\n\nMeet your Admins:\n${admins}\n\nMembers:\n${members}\n\nAgain, Welcome!`;
+
+                        // Send welcome message
+                        api.sendMessage(welcomeMessage, event.threadID, () => {
+                            // Send welcome GIF
+                            if (fs.existsSync(gifPath)) {
                                 api.sendMessage({
                                     body: '',
                                     attachment: fs.createReadStream(gifPath)
                                 }, event.threadID);
-                            });
-                        } else {
-                            api.sendMessage(`Welcome ${name} to the group!`, event.threadID);
-                        }
+                            }
+
+                            // Change new member's nickname
+                            const firstName = name.split(' ')[0];
+                            const nickname = `${firstName} — member`;
+                            api.changeNickname(nickname, event.threadID, participant.userFbId);
+                        });
                     }
                 } catch (error) {
                     console.error("Error:", error);
