@@ -58,24 +58,16 @@ module.exports = {
                         const groupName = threadInfo.threadName;
                         const memberCount = threadInfo.participantIDs.length;
                         const adminIDs = threadInfo.adminIDs;
-                        const participantIDs = threadInfo.participantIDs;
 
-                        // Generate admin and member list messages
+                        // Generate admin list message
                         let admins = '';
                         for (const adminID of adminIDs) {
                             if (info[adminID]) {
-                                admins += `${info[adminID].name}\n`;
+                                admins += `- ${info[adminID].name}\n`;
                             }
                         }
 
-                        let members = '';
-                        for (const participantID of participantIDs) {
-                            if (info[participantID]) {
-                                members += `${info[participantID].name}\n`;
-                            }
-                        }
-
-                        const welcomeMessage = `Welcome ${welcomeTitle} ${name} to ${groupName}\n\nYou are the ${memberCount}th member, Enjoy your welcome here.\n\nMeet your Admins:\n${admins}\n\nMembers:\n${members}\n\nAgain, Welcome!`;
+                        const welcomeMessage = `Welcome ${welcomeTitle} ${name} to ${groupName}\n\nYou are the ${memberCount}th member, Enjoy your welcome here.\n\nMeet your Admins:\n${admins}\n\nAgain, Welcome!`;
 
                         // Send welcome message
                         api.sendMessage(welcomeMessage, event.threadID, () => {
