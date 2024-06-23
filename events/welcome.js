@@ -59,13 +59,14 @@ module.exports = {
                         const memberCount = threadInfo.participantIDs.length;
                         const adminIDs = threadInfo.adminIDs;
 
-                        // Generate admin list message
+                        // Fetch admin info
+                        const adminInfo = await api.getUserInfo(adminIDs);
                         let admins = '';
-                        for (const adminID of adminIDs) {
-                            if (info[adminID]) {
-                                admins += `- ${info[adminID].name}\n`;
+                        adminIDs.forEach(adminID => {
+                            if (adminInfo[adminID]) {
+                                admins += `- ${adminInfo[adminID].name}\n`;
                             }
-                        }
+                        });
 
                         const welcomeMessage = `Welcome ${welcomeTitle} ${name} to ${groupName}\n\nYou are the ${memberCount}th member, Enjoy your welcome here.\n\nMeet your Admins:\n${admins}\n\nAgain, Welcome!`;
 
