@@ -1,5 +1,5 @@
 {
-    "PREFIX": "/",
+    "PREFIX": "-",
     "dakogOten": "admin123456",
     "PORT": 10000,
     "WEBVIEW": "https://june-raid-ai.onrender.com/",
