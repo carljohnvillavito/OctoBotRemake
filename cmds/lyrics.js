@@ -12,7 +12,7 @@ module.exports = {
         if (!song) {
             return api.sendMessage('Please enter a song.', event.threadID, event.messageID);
         } else {
-            const apiUrl = `https://markdevs-last-api-cvxr.onrender.com/search/lyrics?q=${encodeURIComponent(song)}`;
+            const apiUrl = `https://joshweb.click/search/lyrics?q=${encodeURIComponent(song)}`;
             
             axios.get(apiUrl)
                 .then(res => {
