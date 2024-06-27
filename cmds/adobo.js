@@ -8,7 +8,7 @@ module.exports = {
     credits: "Carl John Villavito & Chico",
     execute(api, event, args, commands) {
         if (args.length === 0) {
-            api.sendReactionMessage("🍗", event.messageID, ()=>{}, true);
+            api.setMessageReaction("🍗", event.messageID, ()=>{}, true);
             api.sendMessage("Adobo🍗 | Please provide a question.", event.threadID);
             return;
         }
