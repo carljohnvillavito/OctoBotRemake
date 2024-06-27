@@ -32,7 +32,7 @@ module.exports = {
         await pipeline(response.data, createWriteStream(tempFilePath));
 
         api.setMessageReaction("✅", event.messageID, () => {}, true);
-        api.unsendMessage(ui);
+        
         api.sendMessage({
           body: `🖼️ 𝗗𝗔𝗟𝗟-𝗘 \n━━━━━━━━━━━━\n\nHere is your generated image.`,
           attachment: [createReadStream(tempFilePath)]
