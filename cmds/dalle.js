@@ -25,7 +25,7 @@ module.exports = {
       let ui = info.messageID;
       api.setMessageReaction("⏳", event.messageID, () => {}, true);
       try {
-        const response = await axios.get(`https://deku-rest-api-3ijr.onrender.com/dalle?prompt=${encodeURIComponent(prompt)}`, { responseType: 'stream' });
+        const response = await axios.get(`https://joshweb.click/dalle?prompt=${encodeURIComponent(prompt)}`, { responseType: 'stream' });
 
         // Create a temporary file to store the image
         const tempFilePath = `/tmp/${Date.now()}.jpg`;
