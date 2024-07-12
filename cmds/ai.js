@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports = {
-    description: "Ask the GPT4 a question(conversational)",
+    description: "Ask the GPT-3.5 Turbo a question (conversational)",
     role: "user",
     cooldown: 5,
     execute(api, event, args, commands) {
@@ -15,20 +15,21 @@ module.exports = {
         const question = args.join(" ");
         const searchMessage = `Generating•••`;
         api.sendMessage(searchMessage, event.threadID, event.messageID);
- 
- 
-       const apiUrl = `https://joshweb.click/gpt4?prompt=${encodeURIComponent(question)}&uid=${myOten}`;
-       
+        
+        const apiUrl = `https://joshweb.click/new/gpt-3_5-turbo?prompt=${encodeURIComponent(question)}&uid=${myOten}`;
 
         axios.get(apiUrl)
             .then(response => {
-                const data = response.data;
-                const message = data.gpt4 || "Sorry, I couldn't understand the question.";
+                if (response.data.status === 200) {
+                    const message = response.data.result.reply || "Sorry, I couldn't understand the question.";
 
-                // sendinsg
-                setTimeout(() => {
-                    api.sendMessage(message, event.threadID, event.messageID);
-                }, 3000);
+                    // sending
+                    setTimeout(() => {
+                        api.sendMessage(message, event.threadID, event.messageID);
+                    }, 3000);
+                } else {
+                    api.sendMessage("Sorry, an unexpected error occurred.", event.threadID);
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
