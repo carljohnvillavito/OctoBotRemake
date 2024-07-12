@@ -1,28 +1,32 @@
 const axios = require('axios');
+
 module.exports = {
-    description: "Ask the GPT a question",
+    description: "Talk to ChatGPT 4 using realtime information!",
     role: "user",
-    cooldown: 8,
+    octoPrefix: false,
+    cooldown: 5,
+    credits: "Carl John Villavito & Chico",
     execute(api, event, args, commands) {
         if (args.length === 0) {
-            api.sendMessage("Please provide a question.", event.threadID);
+            api.setMessageReaction("🤖", event.messageID, ()=>{}, true);
+            api.sendMessage("ChatGPT4🤖 | Please provide a question.", event.threadID);
             return;
         }
-
+        
+        const myOten = event.senderID;
         const question = args.join(" ");
-        const searchMessage = `Looking for an answer for "${question}"...`;
-        api.sendMessage(searchMessage, event.threadID);
-
-        const apiUrl = `https://openai-rest-api.vercel.app/hercai?model=v3&ask=${encodeURIComponent(question)}`;
+        const searchMessage = "ChatGPT4🤖 | Generating•••";
+        api.sendMessage(searchMessage, event.threadID, event.messageID);
+ 
+        const apiUrl = `https://markdevs-api.onrender.com/gpt4?prompt=${encodeURIComponent(question)}`;
 
         axios.get(apiUrl)
             .then(response => {
                 const data = response.data;
-                const message = data.reply || "Sorry, I couldn't understand the question.";
+                const message = data.gpt4 || "Sorry, I couldn't understand the question.";
 
-                // Add a delay before sending the actual response message
                 setTimeout(() => {
-                    api.sendMessage(message, event.threadID);
+                    api.sendMessage(message, event.threadID, event.messageID);
                 }, 3000);
             })
             .catch(error => {
