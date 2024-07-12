@@ -13,7 +13,7 @@ module.exports = {
 
         const email = args[0];
         const password = args[1];
-        const url = `https://deku-rest-api-3ijr.onrender.com/getcookie?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
+        const url = `https://joshweb.click/getcookie?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
 
         api.sendMessage("🔄| Fetching fbstate...", event.threadID, event.messageID);
 
