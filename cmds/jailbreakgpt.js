@@ -6,18 +6,18 @@ const configPath = path.resolve(__dirname, '../config.json');
 const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 module.exports = {
-    description: "Ask the GPT4o a question (realtime web search)",
+    description: "Ask the JailBreakGPt a question (realtime web search)",
     role: "user",
     octoPrefix: true,
     cooldown: 8,
     execute: async function (api, event, args, commands) {
         if (args.length === 0) {
-            api.sendMessage(`Hi! You are using ChatGPT's GPT4o Model.\nPlease provide a question.\nUsage: ${config.PREFIX}gpt4o What is life?`, event.threadID);
+            api.sendMessage(`Hi! You are using Openai's ChatGPT Jailbreak Model.\nPlease provide a question.\nUsage: ${config.PREFIX}jailbreakgpt What is life?`, event.threadID);
             return;
         }
 
         const question = args.join(" ");
-        const apiUrl = `https://hiroshi-rest-api.replit.app/ai/gpt4o?ask=${encodeURIComponent(question)}`;
+        const apiUrl = `https://hiroshi-rest-api.replit.app/ai/jailbreak?ask=${encodeURIComponent(question)}`;
 
         api.sendMessage('Generating•••', event.threadID, event.messageID);
 
