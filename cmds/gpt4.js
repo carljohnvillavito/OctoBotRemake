@@ -18,7 +18,7 @@ module.exports = {
         const searchMessage = "ChatGPT4🤖 | Generating•••";
         api.sendMessage(searchMessage, event.threadID, event.messageID);
  
-        const apiUrl = `https://markdevs-api.onrender.com/gpt4?prompt=${encodeURIComponent(question)}`;
+        const apiUrl = `https://markdevs-api.onrender.com/gpt4?prompt=${encodeURIComponent(question)}&uid=${encodeURIComponent(myOten)}`;
 
         axios.get(apiUrl)
             .then(response => {
