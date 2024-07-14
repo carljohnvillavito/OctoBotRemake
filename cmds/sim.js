@@ -14,7 +14,7 @@ module.exports = {
             return api.sendMessage("Please type a message...", tid, mid);
         }
         try {
-            const res = await axios.get(`https://sim-api-ctqz.onrender.com/sim?query=${content}`);
+            const res = await axios.get(`https://simsimi-api-pro.onrender.com/sim?query=${content}`);
             if (res.data.error) {
                 api.sendMessage(`Error: ${res.data.error}`, tid, (error, info) => {
                     if (error) {
