@@ -21,7 +21,7 @@ module.exports = {
                 return api.sendMessage(`Usage: teach hi${separator}hello`, event.threadID, event.messageID);
             }
 
-            const response = await axios.get(`https://sim-api-ctqz.onrender.com/teach?ask=${encodeURIComponent(text1)}&ans=${encodeURIComponent(text2)}`);
+            const response = await axios.get(`https://simsimi-api-pro.onrender.com/teach?ask=${encodeURIComponent(text1)}&ans=${encodeURIComponent(text2)}`);
             
             if (response.data.ask && response.data.ans) {
                 api.sendMessage(`Your ask: ${response.data.ask}\nSim respond: ${response.data.ans}\nSuccessfully taught!`, event.threadID, event.messageID);
