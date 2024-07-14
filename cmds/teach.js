@@ -3,6 +3,7 @@ const axios = require('axios');
 module.exports = {
     description: "Teach Simsimi some words",
     role: "user", // or admin botadmin if required
+    octoPrefix: false,
     cooldown: 5,
     execute: async function(api, event, args, commands) {
         try {
