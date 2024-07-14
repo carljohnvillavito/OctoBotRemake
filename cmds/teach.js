@@ -24,8 +24,9 @@ module.exports = {
 
             const response = await axios.get(`https://simsimi-api-pro.onrender.com/teach?ask=${encodeURIComponent(text1)}&ans=${encodeURIComponent(text2)}`);
             
-            if (response.data.ask && response.data.ans) {
-                api.sendMessage(`Your ask: ${response.data.ask}\nSim respond: ${response.data.ans}\nSuccessfully taught!`, event.threadID, event.messageID);
+            if (response.data && response.data.respond) {
+                const message = response.data.respond;
+                api.sendMessage(message, event.threadID, event.messageID);
             } else {
                 api.sendMessage("Failed to teach SimSimi. Please try again.", event.threadID, event.messageID);
             }
