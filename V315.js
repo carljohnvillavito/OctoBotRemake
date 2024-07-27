@@ -1,16 +1,28 @@
 const fs = require("fs");
 const login = require('./yafbv3-fca-unofficial/index');
+const moment = require('moment-timezone');
 const express = require("express");
 const axios = require('axios');
+const cooldowns = new Map();
+const commands = new Map();
+const handleEventFunctions = [];
+const eventsDir = './events';
+const cmdsDir = './cmds';
 const bodyParser = require("body-parser");
-const chalk = require('chalk');
+const simsimiConfig = require('./cache/simsimi.json');
+const custom = require('./custom');
 const app = express();
+const chalk = require('chalk');
 app.use(bodyParser.urlencoded({ extended: true }));
+const multer = require('multer');
 
+//ggg
 const config = JSON.parse(fs.readFileSync('config.json'));
 const PREFIX = config.PREFIX;
+const dakogOten = config.dakogOten;
 const port = process.env.PORT || config.PORT;
 const restartTime = config.RESTART_TIME;
+const WEB_ORIGIN = config.WEBVIEW;
 
 // Interval for automatic restart
 setInterval(() => {
@@ -28,33 +40,45 @@ try {
     process.exit(1);
 }
 
-async function executeCommand(api, event, args, command) {
+function executeCommand(api, event, args, command) {
     const configFilePath = './yafb_conf.json';
     const bannedUsersUrl = 'https://pastebin.com/raw/k4iUHfSn';
     const userUID = event.senderID;
-    try {
-        const bannedUsersResponse = await axios.get(bannedUsersUrl);
-        const bannedUsers = bannedUsersResponse.data.banned_uids;
-        if (bannedUsers.includes(userUID)) {
-            api.sendMessage("YOU ARE BANNED USING YAFB👋 MAYBE U ARE ISTIPID ENAP", event.threadID, event.messageID);
-            return;
-        }
+    axios.get(bannedUsersUrl)
+        .then(response => {
+            const bannedUsers = response.data.banned_uids;
+            if (bannedUsers.includes(userUID)) {
+                api.sendMessage("YOU ARE BANNED USING YAFB👋 MAYBE U ARE ISTIPID ENAP", event.threadID, event.messageID);
+                return;
+            }
 
-        const keyResponse = await axios.get('https://pastebin.com/raw/p9i6tQ1D');
-        const fetchedKey = keyResponse.data.key;
+            axios.get('https://pastebin.com/raw/p9i6tQ1D')
+                .then(response => {
+                    const fetchedKey = response.data.key;
 
-        const data = fs.readFileSync(configFilePath, 'utf8');
-        const config = JSON.parse(data);
-        const configKey = config.key;
+                    fs.readFile(configFilePath, 'utf8', (err, data) => {
+                        if (err) {
+                            console.error('Error reading the configuration file:', err);
+                            return;
+                        }
 
-        if (fetchedKey !== configKey) {
-            api.sendMessage("Your YAFB Key is Incorrect.", event.threadID, event.messageID);
-        } else {
-            command.execute(api, event, args, commands);
-        }
-    } catch (error) {
-        console.error('Error in executeCommand:', error);
-    }
+                        const config = JSON.parse(data);
+                        const configKey = config.key;
+
+                        if (fetchedKey !== configKey) {
+                            api.sendMessage("Your YAFB Key is Incorrect.", event.threadID, event.messageID);
+                        } else {
+                            command.execute(api, event, args, commands);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching the key:', error);
+                });
+        })
+        .catch(error => {
+            console.error('Error fetching the banned users:', error);
+        });
 }
 
 async function handleCommand(api, event) {
@@ -159,8 +183,8 @@ function handleEvents(api, event) {
 }
 
 function loadCommands() {
-    fs.readdirSync('./cmds').forEach(file => {
-        const command = require(`./cmds/${file}`);
+    fs.readdirSync(cmdsDir).forEach(file => {
+        const command = require(`${cmdsDir}/${file}`);
         commands.set(file.split('.')[0], command);
     });
 }
@@ -172,8 +196,8 @@ commands.forEach((value, key) => {
     console.log(key);
 });
 
-fs.readdirSync('./events').forEach(file => {
-    const event = require(`./events/${file}`);
+fs.readdirSync(eventsDir).forEach(file => {
+    const event = require(`${eventsDir}/${file}`);
     if (event.handleEvent) {
         handleEventFunctions.push(event.handleEvent);
     }
@@ -188,14 +212,14 @@ setInterval(() => {
     try {
         commands.clear();
         loadCommands();
-        console.log("Commands updated.");
+     //   console.log("Commands updated.");
     } catch (error) {
         console.error('Error updating commands:', error);
     }
 }, 30000); // Update every 30 seconds
 
 async function changeBio(api) {
-    const bio = `✅ Status: Active (24/7)\n♨️ Prefix: ${PREFIX}\n👨‍💻Owner: @[61557924257806:999:Chico], @[100013036275290:999:CJ]`;
+    const bio = `✅ Status: Active (24/7)\n♨️ Prefix: ${PREFIX}\n👨‍💻Owner: @[61554890228006:999:DEMETRIO]`;
     try {
         await api.changeBio(bio);
         console.log(chalk.blue('[ SYSTEM ] ') + 'Bio updated successfully.');
@@ -228,17 +252,14 @@ login({ appState: appState }, (err, api) => {
                 case 'message_unsend':
                 case 'message_reaction':
                     let allowedThreads = [];
-
-            try {
+                    try {
                         const rawData = fs.readFileSync('./database/simsimi.json');
                         allowedThreads = JSON.parse(rawData);
                     } catch (err) {
                         console.error('Error reading sim.json:', err);
                     }
 
-                    if (['Prefix', 'pref', 'Pref', 'prefix'].includes(event.body)) {
-                        api.sendMessage(`Our Prefix is ${PREFIX}\n\ntype ${PREFIX}help to show all available cmd along with the description`, event.threadID, event.messageID);
-                    } else {
+                    if (typeof event.body === 'string') {
                         const commandName = event.body.startsWith(PREFIX) ? event.body.slice(PREFIX.length).split(' ')[0] : event.body.split(' ')[0];
                         const command = commands.get(commandName);
 
