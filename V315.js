@@ -259,10 +259,7 @@ login({ appState: appState }, (err, api) => {
                         console.error('Error reading sim.json:', err);
                     }
 
-                    if (typeof event.body === 'string') {
-                        if (['Ai', 'ai', 'Help', 'help'].includes(event.body)) {
-                            api.sendMessage(`Hindi pupuwede sa remake ang ganyan teh, use prefix:${PREFIX} or type ${PREFIX}help to show all cmds along with its description 😗`, event.threadID, event.messageID);
-                        } else if (['Prefix', 'pref', 'Pref', 'prefix'].includes(event.body)) {
+                    if (['Prefix', 'pref', 'Pref', 'prefix'].includes(event.body)) {
                             api.sendMessage(`Our Prefix is ${PREFIX}\n\ntype ${PREFIX}help to show all available cmd along with the description`, event.threadID, event.messageID);
                         } else {
                             const commandName = event.body.startsWith(PREFIX) ? event.body.slice(PREFIX.length).split(' ')[0] : event.body.split(' ')[0];
