@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports = {
-    description: "Ask the GPT-3.5 Turbo a question (conversational)",
+    description: "Ask the GPT-4 API a question (conversational)",
     role: "user",
     cooldown: 5,
     execute(api, event, args, commands) {
@@ -16,12 +16,12 @@ module.exports = {
         const searchMessage = `Generating•••`;
         api.sendMessage(searchMessage, event.threadID, event.messageID);
         
-        const apiUrl = `https://joshweb.click/new/gpt-3_5-turbo?prompt=${encodeURIComponent(question)}&uid=${myOten}`;
+        const apiUrl = `https://hiroshi-rest-api.replit.app/ai/gpt4o?ask=${encodeURIComponent(question)}&uid=${myOten}`;
 
         axios.get(apiUrl)
             .then(response => {
-                if (response.data.status === 200) {
-                    const message = response.data.result.reply || "Sorry, I couldn't understand the question.";
+                if (response.data.response) {
+                    const message = response.data.response || "Sorry, I couldn't understand the question.";
 
                     // sending
                     setTimeout(() => {
