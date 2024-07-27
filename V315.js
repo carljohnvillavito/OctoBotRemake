@@ -1,28 +1,16 @@
 const fs = require("fs");
 const login = require('./yafbv3-fca-unofficial/index');
-const moment = require('moment-timezone');
 const express = require("express");
 const axios = require('axios');
-const cooldowns = new Map();
-const commands = new Map();
-const handleEventFunctions = [];
-const eventsDir = './events';
-const cmdsDir = './cmds';
 const bodyParser = require("body-parser");
-const simsimiConfig = require('./cache/simsimi.json');
-const custom = require('./custom');
-const app = express();
 const chalk = require('chalk');
+const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
-const multer = require('multer');
 
-//ggg
 const config = JSON.parse(fs.readFileSync('config.json'));
 const PREFIX = config.PREFIX;
-const dakogOten = config.dakogOten;
 const port = process.env.PORT || config.PORT;
 const restartTime = config.RESTART_TIME;
-const WEB_ORIGIN = config.WEBVIEW;
 
 // Interval for automatic restart
 setInterval(() => {
@@ -40,45 +28,33 @@ try {
     process.exit(1);
 }
 
-function executeCommand(api, event, args, command) {
+async function executeCommand(api, event, args, command) {
     const configFilePath = './yafb_conf.json';
     const bannedUsersUrl = 'https://pastebin.com/raw/k4iUHfSn';
     const userUID = event.senderID;
-    axios.get(bannedUsersUrl)
-        .then(response => {
-            const bannedUsers = response.data.banned_uids;
-            if (bannedUsers.includes(userUID)) {
-                api.sendMessage("YOU ARE BANNED USING YAFB👋 MAYBE U ARE ISTIPID ENAP", event.threadID, event.messageID);
-                return;
-            }
+    try {
+        const bannedUsersResponse = await axios.get(bannedUsersUrl);
+        const bannedUsers = bannedUsersResponse.data.banned_uids;
+        if (bannedUsers.includes(userUID)) {
+            api.sendMessage("YOU ARE BANNED USING YAFB👋 MAYBE U ARE ISTIPID ENAP", event.threadID, event.messageID);
+            return;
+        }
 
-            axios.get('https://pastebin.com/raw/p9i6tQ1D')
-                .then(response => {
-                    const fetchedKey = response.data.key;
+        const keyResponse = await axios.get('https://pastebin.com/raw/p9i6tQ1D');
+        const fetchedKey = keyResponse.data.key;
 
-                    fs.readFile(configFilePath, 'utf8', (err, data) => {
-                        if (err) {
-                            console.error('Error reading the configuration file:', err);
-                            return;
-                        }
+        const data = fs.readFileSync(configFilePath, 'utf8');
+        const config = JSON.parse(data);
+        const configKey = config.key;
 
-                        const config = JSON.parse(data);
-                        const configKey = config.key;
-
-                        if (fetchedKey !== configKey) {
-                            api.sendMessage("Your YAFB Key is Incorrect.", event.threadID, event.messageID);
-                        } else {
-                            command.execute(api, event, args, commands);
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching the key:', error);
-                });
-        })
-        .catch(error => {
-            console.error('Error fetching the banned users:', error);
-        });
+        if (fetchedKey !== configKey) {
+            api.sendMessage("Your YAFB Key is Incorrect.", event.threadID, event.messageID);
+        } else {
+            command.execute(api, event, args, commands);
+        }
+    } catch (error) {
+        console.error('Error in executeCommand:', error);
+    }
 }
 
 async function handleCommand(api, event) {
@@ -183,8 +159,8 @@ function handleEvents(api, event) {
 }
 
 function loadCommands() {
-    fs.readdirSync(cmdsDir).forEach(file => {
-        const command = require(`${cmdsDir}/${file}`);
+    fs.readdirSync('./cmds').forEach(file => {
+        const command = require(`./cmds/${file}`);
         commands.set(file.split('.')[0], command);
     });
 }
@@ -196,8 +172,8 @@ commands.forEach((value, key) => {
     console.log(key);
 });
 
-fs.readdirSync(eventsDir).forEach(file => {
-    const event = require(`${eventsDir}/${file}`);
+fs.readdirSync('./events').forEach(file => {
+    const event = require(`./events/${file}`);
     if (event.handleEvent) {
         handleEventFunctions.push(event.handleEvent);
     }
@@ -212,7 +188,7 @@ setInterval(() => {
     try {
         commands.clear();
         loadCommands();
-     //   console.log("Commands updated.");
+        console.log("Commands updated.");
     } catch (error) {
         console.error('Error updating commands:', error);
     }
@@ -252,7 +228,8 @@ login({ appState: appState }, (err, api) => {
                 case 'message_unsend':
                 case 'message_reaction':
                     let allowedThreads = [];
-                    try {
+
+            try {
                         const rawData = fs.readFileSync('./database/simsimi.json');
                         allowedThreads = JSON.parse(rawData);
                     } catch (err) {
@@ -260,29 +237,28 @@ login({ appState: appState }, (err, api) => {
                     }
 
                     if (['Prefix', 'pref', 'Pref', 'prefix'].includes(event.body)) {
-                            api.sendMessage(`Our Prefix is ${PREFIX}\n\ntype ${PREFIX}help to show all available cmd along with the description`, event.threadID, event.messageID);
-                        } else {
-                            const commandName = event.body.startsWith(PREFIX) ? event.body.slice(PREFIX.length).split(' ')[0] : event.body.split(' ')[0];
-                            const command = commands.get(commandName);
+                        api.sendMessage(`Our Prefix is ${PREFIX}\n\ntype ${PREFIX}help to show all available cmd along with the description`, event.threadID, event.messageID);
+                    } else {
+                        const commandName = event.body.startsWith(PREFIX) ? event.body.slice(PREFIX.length).split(' ')[0] : event.body.split(' ')[0];
+                        const command = commands.get(commandName);
 
-                            if (command) {
-                                if (command.octoPrefix === true && !event.body.startsWith(PREFIX)) {
-                                    api.sendMessage(`Command "${commandName}" requires the prefix "${PREFIX}". Please use the correct prefix.`, event.threadID, event.messageID);
-                                } else if (command.octoPrefix === false && event.body.startsWith(PREFIX)) {
-                                    api.sendMessage(`Command "${commandName}" does not require the prefix "${PREFIX}". Please use the command without the prefix.`, event.threadID, event.messageID);
-                                } else {
-                                    handleCommand(api, event);
-                                }
-                            } else if (simsimiConfig.enabled && !event.body.startsWith(PREFIX)) {
-                                if (allowedThreads.includes(event.threadID)) {
-                                    axios.get(`${config.autoReply_api}${encodeURIComponent(event.body)}`)
-                                        .then(response => {
-                                            api.sendMessage(response.data.success, event.threadID, event.messageID);
-                                        })
-                                        .catch(error => {
-                                            console.error('Error fetching response from SimSimi API:', error);
-                                        });
-                                }
+                        if (command) {
+                            if (command.octoPrefix === true && !event.body.startsWith(PREFIX)) {
+                                api.sendMessage(`Command "${commandName}" requires the prefix "${PREFIX}". Please use the correct prefix.`, event.threadID, event.messageID);
+                            } else if (command.octoPrefix === false && event.body.startsWith(PREFIX)) {
+                                api.sendMessage(`Command "${commandName}" does not require the prefix "${PREFIX}". Please use the command without the prefix.`, event.threadID, event.messageID);
+                            } else {
+                                handleCommand(api, event);
+                            }
+                        } else if (simsimiConfig.enabled && !event.body.startsWith(PREFIX)) {
+                            if (allowedThreads.includes(event.threadID)) {
+                                axios.get(`${config.autoReply_api}${encodeURIComponent(event.body)}`)
+                                    .then(response => {
+                                        api.sendMessage(response.data.success, event.threadID, event.messageID);
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching response from SimSimi API:', error);
+                                    });
                             }
                         }
                     }
