@@ -219,7 +219,7 @@ setInterval(() => {
 }, 30000); // Update every 30 seconds
 
 async function changeBio(api) {
-    const bio = `✅ Status: Active (24/7)\n♨️ Prefix: ${PREFIX}\n👨‍💻Owner: @[61554890228006:999:DEMETRIO]`;
+    const bio = `✅ Status: Active (24/7)\n♨️ Prefix: ${PREFIX}\n👨‍💻Owner: https://www.facebook.com/goddamn.chico`;
     try {
         await api.changeBio(bio);
         console.log(chalk.blue('[ SYSTEM ] ') + 'Bio updated successfully.');
