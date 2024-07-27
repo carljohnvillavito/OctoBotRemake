@@ -20,8 +20,8 @@ module.exports = {
 
         axios.get(apiUrl)
             .then(response => {
-                if (response.data.response) {
-                    const message = response.data.response || "Sorry, I couldn't understand the question.";
+                if (response.data && response.data.response) {
+                    const message = response.data.response;
 
                     // sending
                     setTimeout(() => {
