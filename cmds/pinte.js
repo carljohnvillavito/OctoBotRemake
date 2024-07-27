@@ -18,6 +18,7 @@ module.exports = {
   description: "search pictures in Pinterest",
   role: "user",
   cooldown: 5,
+  octoPrefix: false,
   execute: async function(api, event, args, commands) {
     const input = args.join(' ');
     const time = new Date();
