@@ -16,7 +16,7 @@ module.exports = {
         const searchMessage = `Generating•••`;
         api.sendMessage(searchMessage, event.threadID, event.messageID);
         
-        const apiUrl = `https://hiroshi-rest-api.replit.app/ai/gpt4o?ask=${encodeURIComponent(question)}&uid=${myOten}`;
+        const apiUrl = `https://hiroshi-rest-api.replit.app/ai/gpt4o?ask=${encodeURIComponent(question)}&id=${myOten}`;
 
         axios.get(apiUrl)
             .then(response => {
