@@ -20,7 +20,8 @@ module.exports = {
 
         axios.get(apiUrl)
             .then(response => {
-                
+                const data = response.data;
+                const message = data.response || "Sorry, I couldn't understand the question.";
                     setTimeout(() => {
                         api.sendMessage(message, event.threadID, event.messageID);
                     }, 3000);
