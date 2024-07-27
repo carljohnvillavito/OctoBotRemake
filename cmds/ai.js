@@ -20,16 +20,10 @@ module.exports = {
 
         axios.get(apiUrl)
             .then(response => {
-                if (response.data && response.data.response) {
-                    const message = response.data.response;
-
-                    // sending
+                
                     setTimeout(() => {
                         api.sendMessage(message, event.threadID, event.messageID);
                     }, 3000);
-                } else {
-                    api.sendMessage("Sorry, an unexpected error occurred.", event.threadID);
-                }
             })
             .catch(error => {
                 console.error('Error:', error);
