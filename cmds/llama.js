@@ -17,16 +17,16 @@ module.exports = {
         const searchMessage = "Llama | Generating•••";
         api.sendMessage(searchMessage, event.threadID, event.messageID);
  
-        const apiUrl = `https://list-ai-api.replit.app/llama?ask=${encodeURIComponent(question)}&apikey=kimdgbien`;
+        const apiUrl = `https://ggwp-yyxy.onrender.com/api/llama-3-70b?q=${encodeURIComponent(question)}&apikey=kimdgbien`;
 
         axios.get(apiUrl)
             .then(response => {
                 const data = response.data;
-                const message = data.response || "Sorry, I couldn't understand the question.";
+                const message = data.result || "Sorry, I couldn't understand the question.";
 
                 setTimeout(() => {
                     api.sendMessage(message, event.threadID, event.messageID);
-                }, 3000);
+                }, 500);
             })
             .catch(error => {
                 console.error('Error:', error);
