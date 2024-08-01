@@ -13,16 +13,16 @@ module.exports = {
             return;
         }
 
-        api.sendTypingIndicator(event.threadID);
+
         api.sendMessage("Generating Prompt...", event.threadID, event.messageID);
 
         try {
             let apiEndpoint;
             if (event.type === "message_reply" && event.messageReply.attachments[0]?.type === "photo") {
                 const imageUrl = encodeURIComponent(event.messageReply.attachments[0].url);
-                apiEndpoint = `https://joshweb.click/gemini?prompt=${encodeURIComponent(prompt)}&url=${imageUrl}`;
+                apiEndpoint = `https://ggwp-yyxy.onrender.com/gemini?prompt=${encodeURIComponent(prompt)}&url=${imageUrl}`;
             } else {
-                apiEndpoint = `https://joshweb.click/new/gemini?prompt=${encodeURIComponent(prompt)}`;
+                apiEndpoint = `https://ggwp-yyxy.onrender.com/new/gemini?prompt=${encodeURIComponent(prompt)}`;
             }
 
             const response = await axios.get(apiEndpoint);
